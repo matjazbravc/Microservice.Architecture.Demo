@@ -1,0 +1,2 @@
+# Microservice.Architecture.Demo
+This demo shows a working sample of microservices architecture using ASP.NET Core. It covers how to create microservices using ASP.NET Core, how to create API gateways using Ocelot, how to use MassTransit as the service bus, RabbitMQ as the transport running on Docker, how to unit test microservices using xUnit, how to monitor microservices using health checks, and finally how to deploy microservices using Docker containers on Linux distributions.
