@@ -1,0 +1,71 @@
+version: '3.9'
+
+services:
+    rabbitmq:
+        container_name: rabbitmq
+        hostname: rabbitmq
+        image: masstransit/rabbitmq:latest
+        networks:
+            - common_network
+
+    exchange.rates.coincap.openapi:
+        container_name: exchange.rates.coincap.openapi
+        image: exchange.rates.coincap.openapi:latest
+        build:
+            context: .
+            dockerfile: Exchange.Rates.CoinCap.OpenApi/Dockerfile
+        restart: on-failure
+        depends_on:
+            - rabbitmq
+        networks:
+            - common_network
+
+    exchange.rates.coincap.polling.api:
+        container_name: exchange.rates.coincap.polling.api
+        image: exchange.rates.coincap.polling.api:latest
+        build:
+            context: .
+            dockerfile: Exchange.Rates.CoinCap.Polling.Api/Dockerfile
+        depends_on:
+            - rabbitmq
+        networks:
+            - common_network
+
+    exchange.rates.ecb.openapi:
+        container_name: exchange.rates.ecb.openapi
+        image: exchange.rates.ecb.openapi:latest
+        build:
+            context: .
+            dockerfile: Exchange.Rates.Ecb.OpenApi/Dockerfile
+        depends_on:
+            - rabbitmq
+        networks:
+            - common_network
+
+    exchange.rates.ecb.polling.api:
+        container_name: exchange.rates.ecb.polling.api
+        image: exchange.rates.ecb.polling.api:latest
+        build:
+            context: .
+            dockerfile: Exchange.Rates.Ecb.Polling.Api/Dockerfile
+        depends_on:
+            - rabbitmq
+        networks:
+            - common_network
+
+    exchange.rates.gateway:
+        container_name: exchange.rates.gateway
+        image: exchange.rates.gateway:latest
+        build:
+            context: .
+            dockerfile: Exchange.Rates.Gateway/Dockerfile
+        restart: on-failure
+        networks:
+            - common_network
+        depends_on:
+            - exchange.rates.ecb.openapi
+            - exchange.rates.coincap.openapi
+
+networks:
+    common_network:
+        driver: bridge
