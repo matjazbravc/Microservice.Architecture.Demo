@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<IsPackable>false</IsPackable>
+	</PropertyGroup>
+	<ItemGroup>
+		<None Remove="appsettings.coincap.json" />
+		<None Remove="UnitTests\appsettings.ecb.json" />
+	</ItemGroup>
+	<ItemGroup>
+		<Content Include="appsettings.coincap.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</Content>
+		<Content Include="appsettings.ecb.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</Content>
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="FluentAssertions" Version="6.12.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.10" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.10" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+		<PackageReference Include="Moq" Version="4.20.72" />
+		<PackageReference Include="WebMotions.Fake.Authentication.JwtBearer" Version="8.0.1" />
+		<PackageReference Include="xunit" Version="2.9.2" />
+		<PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Exchange.Rates.CoinCap.OpenApi\Exchange.Rates.CoinCap.OpenApi.csproj" />
+		<ProjectReference Include="..\Exchange.Rates.CoinCap.Polling.Api\Exchange.Rates.CoinCap.Polling.Api.csproj" />
+		<ProjectReference Include="..\Exchange.Rates.Contracts\Exchange.Rates.Contracts.csproj" />
+		<ProjectReference Include="..\Exchange.Rates.Core\Exchange.Rates.Core.csproj" />
+		<ProjectReference Include="..\Exchange.Rates.Ecb.OpenApi\Exchange.Rates.Ecb.OpenApi.csproj" />
+		<ProjectReference Include="..\Exchange.Rates.Ecb.Polling.Api\Exchange.Rates.Ecb.Polling.Api.csproj" />
+	</ItemGroup>
+</Project>

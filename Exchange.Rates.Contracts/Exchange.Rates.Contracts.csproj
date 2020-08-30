@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<NoWarn>1574;1591;1591;1701;1702;CS8604;CS8618;IDE0007;IDE0023;IDE0057;IDE0058;IDE0063;IDE0066;IDE0090;S101;S1450;S3267;S2376;</NoWarn>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<NoWarn>1574;1591;1591;1701;1702;CS8604;CS8618;IDE0007;IDE0023;IDE0057;IDE0058;IDE0063;IDE0066;IDE0090;S101;S1450;S3267;S2376;</NoWarn>
+	</PropertyGroup>
+	<ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+  </ItemGroup>
+</Project>
