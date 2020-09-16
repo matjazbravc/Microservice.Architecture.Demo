@@ -194,6 +194,7 @@ From today’s DevOps position it is necessary to change applications fast and o
 - [Docker](https://www.docker.com/resources/what-container)  
 - [OpenAPI](https://swagger.io/specification/)
 - [Serilog](https://serilog.net/)
+- [xUnit](https://xunit.net)
 
 ## Licence
 Licenced under [MIT](http://opensource.org/licenses/mit-license.php).
