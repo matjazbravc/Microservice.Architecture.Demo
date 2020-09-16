@@ -7,12 +7,12 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
-COPY ["Exchange.Rate.CoinCap.Polling.Api/Exchange.Rates.CoinCap.Polling.Api.csproj", "Exchange.Rate.CoinCap.Polling.Api/"]
+COPY ["Exchange.Rates.CoinCap.Polling.Api/Exchange.Rates.CoinCap.Polling.Api.csproj", "Exchange.Rates.CoinCap.Polling.Api/"]
+COPY ["Exchange.Rates.Contracts/Exchange.Rates.Contracts.csproj", "Exchange.Rates.Contracts/"]
 COPY ["Exchange.Rates.Core/Exchange.Rates.Core.csproj", "Exchange.Rates.Core/"]
-COPY ["Exchange.Rate.Contracts/Exchange.Rates.Contracts.csproj", "Exchange.Rate.Contracts/"]
-RUN dotnet restore "Exchange.Rate.CoinCap.Polling.Api/Exchange.Rates.CoinCap.Polling.Api.csproj"
+RUN dotnet restore "Exchange.Rates.CoinCap.Polling.Api/Exchange.Rates.CoinCap.Polling.Api.csproj"
 COPY . .
-WORKDIR "/src/Exchange.Rate.CoinCap.Polling.Api"
+WORKDIR "/src/Exchange.Rates.CoinCap.Polling.Api"
 RUN dotnet build "Exchange.Rates.CoinCap.Polling.Api.csproj" -c Release -o /app/build
 
 FROM build AS publish

@@ -8,8 +8,8 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
 COPY ["Exchange.Rates.Ecb.OpenApi/Exchange.Rates.Ecb.OpenApi.csproj", "Exchange.Rates.Ecb.OpenApi/"]
+COPY ["Exchange.Rates.Contracts/Exchange.Rates.Contracts.csproj", "Exchange.Rates.Contracts/"]
 COPY ["Exchange.Rates.Core/Exchange.Rates.Core.csproj", "Exchange.Rates.Core/"]
-COPY ["Exchange.Rate.Contracts/Exchange.Rates.Contracts.csproj", "Exchange.Rate.Contracts/"]
 RUN dotnet restore "Exchange.Rates.Ecb.OpenApi/Exchange.Rates.Ecb.OpenApi.csproj"
 COPY . .
 WORKDIR "/src/Exchange.Rates.Ecb.OpenApi"

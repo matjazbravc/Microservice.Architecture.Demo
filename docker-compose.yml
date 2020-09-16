@@ -1,4 +1,4 @@
-version: '3'
+version: '3.8'
 services:
     rabbitmq:
         container_name: rabbitmq
@@ -25,7 +25,7 @@ services:
             - Kestrel__Certificates__Default__Password=SecretPassword
         build:
             context: .
-            dockerfile: ./Exchange.Rate.CoinCap.Polling.Api/Dockerfile
+            dockerfile: Exchange.Rates.CoinCap.Polling.Api/Dockerfile
         restart: on-failure
         networks:
             - common_network
@@ -44,7 +44,7 @@ services:
             - Kestrel__Certificates__Default__Password=SecretPassword        
         build:
             context: .
-            dockerfile: ./Exchange.Rates.CoinCap.OpenApi/Dockerfile  
+            dockerfile: Exchange.Rates.CoinCap.OpenApi/Dockerfile  
         restart: on-failure
         networks:
           - common_network
@@ -63,7 +63,7 @@ services:
             - Kestrel__Certificates__Default__Password=SecretPassword
         build:
             context: .
-            dockerfile: ./Exchange.Rate.Ecb.Polling.Api/Dockerfile
+            dockerfile: Exchange.Rates.Ecb.Polling.Api/Dockerfile
         restart: on-failure
         networks:
             - common_network
@@ -82,7 +82,7 @@ services:
             - Kestrel__Certificates__Default__Password=SecretPassword        
         build:
             context: .
-            dockerfile: ./Exchange.Rates.Ecb.OpenApi/Dockerfile  
+            dockerfile: Exchange.Rates.Ecb.OpenApi/Dockerfile  
         restart: on-failure
         networks:
             - common_network
@@ -100,7 +100,7 @@ services:
             - Kestrel__Certificates__Default__Password=SecretPassword
         build:
             context: .
-            dockerfile: ./Exchange.Rates.Gateway/Dockerfile
+            dockerfile: Exchange.Rates.Gateway/Dockerfile
         restart: on-failure
         networks:
             - common_network

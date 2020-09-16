@@ -47,7 +47,7 @@ After creating the certificate, you only have to share it with your container.
 ## Docker-Compose File
 Docker-compose file with setup for all the containers looks like this:
 ```yml
-version: '3'
+version: '3.8'
 services:
     rabbitmq:
         container_name: rabbitmq
@@ -74,7 +74,7 @@ services:
             - Kestrel__Certificates__Default__Password=SecretPassword
         build:
             context: .
-            dockerfile: ./Exchange.Rate.CoinCap.Polling.Api/Dockerfile
+            dockerfile: Exchange.Rates.CoinCap.Polling.Api/Dockerfile
         restart: on-failure
         networks:
             - common_network
@@ -93,7 +93,7 @@ services:
             - Kestrel__Certificates__Default__Password=SecretPassword        
         build:
             context: .
-            dockerfile: ./Exchange.Rates.CoinCap.OpenApi/Dockerfile  
+            dockerfile: Exchange.Rates.CoinCap.OpenApi/Dockerfile  
         restart: on-failure
         networks:
           - common_network
@@ -112,7 +112,7 @@ services:
             - Kestrel__Certificates__Default__Password=SecretPassword
         build:
             context: .
-            dockerfile: ./Exchange.Rate.Ecb.Polling.Api/Dockerfile
+            dockerfile: Exchange.Rates.Ecb.Polling.Api/Dockerfile
         restart: on-failure
         networks:
             - common_network
@@ -131,7 +131,7 @@ services:
             - Kestrel__Certificates__Default__Password=SecretPassword        
         build:
             context: .
-            dockerfile: ./Exchange.Rates.Ecb.OpenApi/Dockerfile  
+            dockerfile: Exchange.Rates.Ecb.OpenApi/Dockerfile  
         restart: on-failure
         networks:
             - common_network
@@ -149,7 +149,7 @@ services:
             - Kestrel__Certificates__Default__Password=SecretPassword
         build:
             context: .
-            dockerfile: ./Exchange.Rates.Gateway/Dockerfile
+            dockerfile: Exchange.Rates.Gateway/Dockerfile
         restart: on-failure
         networks:
             - common_network
@@ -164,6 +164,10 @@ networks:
   common_network: {}
 ```
 **NOTE**: When starting multiple containers with a compose file, a **common_network** is created in **which all containers are using**. Containers can reach each other with the container name.
+
+## Setup the Containers
+To execute compose file, open Powershell, and navigate to the compose file in the root folder. Then execute the following command: **docker-compose up -d**. The -d parameter executes the command detached. This means that the containers run in the background and don’t block your Powershell window.
+To check all running Containers use **docker ps**.
 
 ## Runnig in Docker
 ![](res/DockerRunning.jpg)

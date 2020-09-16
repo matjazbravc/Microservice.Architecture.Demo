@@ -3,8 +3,6 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>52406460-d2a5-47ff-bde8-afe0e309b3d2</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <!--<DockerfileContext>..\..</DockerfileContext>
-    <DockerComposeProjectPath>..\..\docker-compose.dcproj</DockerComposeProjectPath>-->
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
