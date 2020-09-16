@@ -1,7 +1,7 @@
 ![](res/Containers.jpg)
 # Microservice Architecture in ASP.NET Core
 
-This demo shows a working sample of microservices architecture using ASP.NET Core. It covers how to create microservices, how to create API gateways using [Ocelot](https://github.com/ThreeMammals/Ocelot), how to use [MassTransit](http://masstransit-project.com) as distributed application framework, [RabbitMQ](https://www.rabbitmq.com) as the service bus running on [Docker](https://www.docker.com/resources/what-container), how to unit test microservices using xUnit, how to monitor microservices using health checks, and finally how to deploy microservices using Docker containers on Linux distributions.
+This demo shows a working sample of microservices architecture using ASP.NET Core. It covers how to create microservices, how to create API gateways using [Ocelot](https://github.com/ThreeMammals/Ocelot), how to use [MassTransit](http://masstransit-project.com) as distributed application framework, [RabbitMQ](https://www.rabbitmq.com) as the message broker, how to unit test microservices using xUnit, how to monitor microservices using health checks, and finally how to deploy microservices using [Docker](https://www.docker.com/resources/what-container) containers on Linux distributions.
 
 ## Introduction
 
@@ -19,7 +19,7 @@ API gateways are entry points for clients. Instead of calling services directly,
 * Developers can better understand the functionality of a service
 
 ## Why MassTransit?
-[MassTransit](http://masstransit-project.com) is a free, open source, lightweight message bus for creating distributed applications using the .NET framework. [MassTransit](http://masstransit-project.com) provides an extensive set of features on top existing message transports, resulting in a developer friendly way to asynchronously connect services using message-based conversation patterns. Message-based communication is a reliable and scalable way to implement a service oriented architecture.
+[MassTransit](http://masstransit-project.com) is a free, open source, lightweight distributed application framework for creating distributed applications using the .NET framework. [MassTransit](http://masstransit-project.com) provides an extensive set of features on top existing message transports, resulting in a developer friendly way to asynchronously connect services using message-based conversation patterns. Message-based communication is a reliable and scalable way to implement a service oriented architecture.
 If you want to know more please visit [MassTransit](http://masstransit-project.com).
 
 ## Why RabbitMQ?
