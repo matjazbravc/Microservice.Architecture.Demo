@@ -6,8 +6,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "exchange-rates-coincap-openapi",
-          "Port": 80,
-          "UseServiceDiscovery": true
+          "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/exchangeratescoincap/assetinfo",
@@ -19,8 +18,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "exchange-rates-ecb-openapi",
-          "Port": 80,
-          "UseServiceDiscovery": true
+          "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/exchangeratesecb/usdbaserates",
@@ -28,7 +26,6 @@
     }
   ],
   "GlobalConfiguration": {
-    "RequestIdKey": null,
-    "AdministrationPath": null
+    "BaseUrl": "https://localhost:8001"
   }
 }

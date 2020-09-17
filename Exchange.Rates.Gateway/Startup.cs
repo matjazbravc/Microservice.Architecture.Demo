@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Ocelot.DependencyInjection;
@@ -12,31 +13,33 @@ namespace Exchange.Rates.Gateway
     {
         private const string SERVICE_NAME = "Exchange.Rates.Gateway";
 
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+        public IConfiguration Configuration { get; }
+
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddOcelot();
+            services.AddOcelot(Configuration);
         }
 
-        public async void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
             app.UseRouting();
-
             app.UseEndpoints(config =>
             {
                 config.MapGet("/", async context =>
                 {
                     await context.Response.WriteAsync(SERVICE_NAME);
                 });
-
-                config.MapControllers();
             });
-
             app.UseStaticFiles();
-            await app.UseOcelot();
+            app.UseOcelot().Wait();
         }
     }
 }

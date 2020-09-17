@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Ocelot.DependencyInjection;
 using System.IO;
 
 namespace Exchange.Rates.Gateway
@@ -9,25 +11,24 @@ namespace Exchange.Rates.Gateway
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            BuildWebHost(args).Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
+        public static IWebHost BuildWebHost(string[] args) =>
+            WebHost.CreateDefaultBuilder(args)
+                .UseKestrel()
                 .UseContentRoot(Directory.GetCurrentDirectory())
-                .UseDefaultServiceProvider(options => options.ValidateScopes = false)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                })
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
-                    config.SetBasePath(hostingContext.HostingEnvironment.ContentRootPath)
-                    .AddJsonFile("ocelot.json", optional: false, reloadOnChange: true)
-                    // for local test use below one, multi env json file not worked
-                    //.AddJsonFile($"ocelot.{hostingContext.HostingEnvironment.EnvironmentName}.json", true, true)
-                    .AddEnvironmentVariables();
-                });
+                    config
+                        .SetBasePath(hostingContext.HostingEnvironment.ContentRootPath)
+                        .AddJsonFile("appsettings.json", true, true)
+                        .AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json", true, true)
+                        .AddOcelot(hostingContext.HostingEnvironment)
+                        .AddEnvironmentVariables();
+                })
+                .UseStartup<Startup>()
+                .Build();
     }
 }
 
