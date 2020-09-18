@@ -20,6 +20,7 @@ services:
             - 7000:80
             - 7001:443
         environment:
+            - ASPNETCORE_ENVIRONMENT=Development
             - ASPNETCORE_URLS=https://+;http://+
             - Kestrel__Certificates__Default__Path=/app/Infrastructure/Certificate/cert-aspnetcore.pfx
             - Kestrel__Certificates__Default__Password=SecretPassword
@@ -39,6 +40,7 @@ services:
             - 4000:80
             - 4001:443
         environment:
+            - ASPNETCORE_ENVIRONMENT=Development
             - ASPNETCORE_URLS=https://+;http://+
             - Kestrel__Certificates__Default__Path=/app/Infrastructure/Certificate/cert-aspnetcore.pfx
             - Kestrel__Certificates__Default__Password=SecretPassword        
@@ -58,6 +60,7 @@ services:
             - 6000:80
             - 6001:443
         environment:
+            - ASPNETCORE_ENVIRONMENT=Development
             - ASPNETCORE_URLS=https://+;http://+
             - Kestrel__Certificates__Default__Path=/app/Infrastructure/Certificate/cert-aspnetcore.pfx
             - Kestrel__Certificates__Default__Password=SecretPassword
@@ -77,6 +80,7 @@ services:
             - 5000:80
             - 5001:443
         environment:
+            - ASPNETCORE_ENVIRONMENT=Development
             - ASPNETCORE_URLS=https://+;http://+
             - Kestrel__Certificates__Default__Path=/app/Infrastructure/Certificate/cert-aspnetcore.pfx
             - Kestrel__Certificates__Default__Password=SecretPassword        
@@ -95,6 +99,7 @@ services:
             - 8000:80
             - 8001:443
         environment:
+            - ASPNETCORE_ENVIRONMENT=Development
             - ASPNETCORE_URLS=https://+;http://+
             - Kestrel__Certificates__Default__Path=/app/Infrastructure/Certificate/cert-aspnetcore.pfx
             - Kestrel__Certificates__Default__Password=SecretPassword
@@ -104,9 +109,6 @@ services:
         restart: on-failure
         networks:
             - common_network
-        links:
-            - exchange-rates-ecb-openapi
-            - exchange-rates-coincap-openapi
         depends_on:
             - exchange-rates-ecb-openapi
             - exchange-rates-coincap-openapi
