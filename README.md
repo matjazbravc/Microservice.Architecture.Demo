@@ -25,13 +25,17 @@ If you want to know more please visit [MassTransit](http://masstransit-project.c
 ## Why RabbitMQ?
 [RabbitMQ](https://www.rabbitmq.com) describes itself as the most widely deployed open-source message broker. It is easy to implement and supports a wide variety of technologies like Docker, .Net or Go. It also offers plugins for monitoring, managing or authentication. I've chose RabbitMQ because it is well known, quickly implemented and especially can be easily run using Docker.
 
-## Architecture
-There are four microservices:
+## Why Ocelot?
+There are so many API Gateway frameworks from Open Source to Commercial, but you have to buy license or subscription like NGNIX, Kong, Tyk ...
+Microsoft and Amazon also provide API Gateway services on the cloud: [Azure API Management](https://azure.microsoft.com/en-us/services/api-management/) and [AWS API Gateway](https://aws.amazon.com/api-gateway/).
+[Ocelot](https://github.com/ThreeMammals/Ocelot) is an open-source API Gateway built on ASP.Net Core. Although, it is lightweight but it also provides fully basic functions that an API Gateway must-have (Routing, API Composition, Caching, Logging, Integration with Identity Provider, Rate limiting).
 
-* **Exchange.Rates.CoinCap.OpenApi**: REST for retrieving pricing and market activity for cryptocurrencies
-* **Exchange.Rates.CoinCap.Polling.Api**: gets cryptocurrencies info. It uses [CoinCap API 2.0](https://docs.coincap.io/)
+## Architecture
+* **Exchange.Rates.Gateway**: Gateway to all APIs
+* **Exchange.Rates.CoinCap.OpenApi**: REST for retrieving pricing and market activity for crypto currencies
+* **Exchange.Rates.CoinCap.Polling.Api**: Service to retrieve crypto currencies info. It uses [CoinCap API 2.0](https://docs.coincap.io/)
 * **Exchange.Rates.Ecb.OpenApi**: REST for European Central Bank (ECB) Foreign exchange rates
-* **Exchange.Rates.Ecb.Polling.Api**: gets ECB exchange rates. It uses [ECB Foreign exchange rates API](https://exchangeratesapi.io/)
+* **Exchange.Rates.Ecb.Polling.Api**: Service to retrieve ECB exchange rates. It uses [ECB Foreign exchange rates API](https://exchangeratesapi.io/)
 
 ## Implementation
 For a sake of simplicity I didn't implement any Identity microservice. I've used a [Docker](https://www.docker.com/resources/what-container), so I didn't pollute my development environment with many things concurrently installed. I also assumed you know how to work using Docker workflow.
@@ -178,12 +182,18 @@ To check all running Containers use **docker ps**.
 ## Swagger UI for Exchange.Rates.Ecb.OpenApi
 ![](res/EcbOpenApi.jpg)
 
+## Call Gateway
+Let’s try to access CoinCap API through API Gateway:
+![](res/Gateway.jpg)
+And access Ecb API through API Gateway:
+![](res/Gateway_Ecb.jpg)
+Works perfectly!
 ## Testing
-Test project includes both Unit and integration tests:  
+Test project includes both Unit and Integration tests:  
 ![](res/Tests.jpg)
 
 ## Conclusion
-From today’s DevOps position it is necessary to change applications fast and often. Additionally, microservices should run inside a container and Docker is the defacto standard container. That’s it. Works perfectly!
+From today’s DevOps position it is necessary to change applications fast and often. Additionally, microservices should run inside a container and Docker is the defacto standard container. Enjoy!
 
 ## Prerequisites
 - [Visual Studio](https://www.visualstudio.com/vs/community) 2019 16.4.5 or greater
