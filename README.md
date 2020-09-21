@@ -217,10 +217,10 @@ To check all running Containers use **docker ps**.
 ![](res/EcbOpenApi.jpg)
 
 ## Call Gateway
-Let’s try to access **CoinCap API** through API Gateway:
+Let’s try to access **CoinCap API** through API Gateway:  
 **https://localhost:8001/exchangeratescoincap/assetinfo?id=bitcoin**
 ![](res/Gateway.jpg)
-And access **Ecb API** through API Gateway:
+And access **Ecb API** through API Gateway:  
 **https://localhost:8001/exchangeratesecb/usdbaserates?symbols=EUR,CHF,CZK**
 ![](res/Gateway_Ecb.jpg)
 Works perfectly!
