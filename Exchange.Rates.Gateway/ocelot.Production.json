@@ -5,7 +5,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "exchange-rates-coincap-openapi",
+          "Host": "exchange.rates.coincap.openapi",
           "Port": 80
         }
       ],
@@ -17,7 +17,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "exchange-rates-ecb-openapi",
+          "Host": "exchange.rates.ecb.openapi",
           "Port": 80
         }
       ],

@@ -48,10 +48,11 @@ Creating a Certificate to use ASP.NET Core with **HTTPS** in Docker you can crea
 After creating the certificate, you only have to share it with your container.  
 **NOTE:** You must set a password. Otherwise, Kestrel won’t be able to use the certificate!
 
-## Docker-Compose File
-Docker-compose file with setup for all the containers looks like this:
+## Docker-Compose Files
+**Docker-compose.yml** file with setup for all the containers looks like this:
 ```yml
-version: '3.8'
+version: '3.4'
+
 services:
     rabbitmq:
         container_name: rabbitmq
@@ -66,106 +67,137 @@ services:
         networks:
             - common_network
 
-    exchange-rates-coincap-polling-api:
-        container_name: exchange-rates-coincap-polling-api
-        hostname: exchange-rates-coincap-polling-api
-        ports:
-            - 7000:80
-            - 7001:443
-        environment:
-            - ASPNETCORE_URLS=https://+;http://+
-            - Kestrel__Certificates__Default__Path=/app/Infrastructure/Certificate/cert-aspnetcore.pfx
-            - Kestrel__Certificates__Default__Password=SecretPassword
+    exchange.rates.coincap.openapi:
+        container_name: exchange.rates.coincap.openapi
+        image: ${DOCKER_REGISTRY-}exchangeratescoincapopenapi
+        build:
+            context: .
+            dockerfile: Exchange.Rates.CoinCap.OpenApi/Dockerfile
+        restart: on-failure
+        depends_on:
+            - rabbitmq
+        networks:
+            - common_network
+
+    exchange.rates.coincap.polling.api:
+        container_name: exchange.rates.coincap.polling.api
+        image: ${DOCKER_REGISTRY-}exchangeratescoincappollingapi
         build:
             context: .
             dockerfile: Exchange.Rates.CoinCap.Polling.Api/Dockerfile
-        restart: on-failure
-        networks:
-            - common_network
         depends_on:
             - rabbitmq
+        networks:
+            - common_network
 
-    exchange-rates-coincap-openapi:
-        container_name: exchange-rates-coincap-openapi
-        hostname: exchange-rates-coincap-openapi
-        ports:
-            - 4000:80
-            - 4001:443
-        environment:
-            - ASPNETCORE_URLS=https://+;http://+
-            - Kestrel__Certificates__Default__Path=/app/Infrastructure/Certificate/cert-aspnetcore.pfx
-            - Kestrel__Certificates__Default__Password=SecretPassword        
+    exchange.rates.ecb.openapi:
+        container_name: exchange.rates.ecb.openapi
+        image: ${DOCKER_REGISTRY-}exchangeratesecbopenapi
         build:
             context: .
-            dockerfile: Exchange.Rates.CoinCap.OpenApi/Dockerfile  
-        restart: on-failure
-        networks:
-          - common_network
+            dockerfile: Exchange.Rates.Ecb.OpenApi/Dockerfile
         depends_on:
-          - rabbitmq
+            - rabbitmq
+        networks:
+            - common_network
 
-    exchange-rates-ecb-polling-api:
-        container_name: exchange-rates-ecb-polling-api
-        hostname: exchange-rates-ecb-polling-api
-        ports:
-            - 6000:80
-            - 6001:443
-        environment:
-            - ASPNETCORE_URLS=https://+;http://+
-            - Kestrel__Certificates__Default__Path=/app/Infrastructure/Certificate/cert-aspnetcore.pfx
-            - Kestrel__Certificates__Default__Password=SecretPassword
+    exchange.rates.ecb.polling.api:
+        container_name: exchange.rates.ecb.polling.api
+        image: ${DOCKER_REGISTRY-}exchangeratesecbpollingapi
         build:
             context: .
             dockerfile: Exchange.Rates.Ecb.Polling.Api/Dockerfile
-        restart: on-failure
-        networks:
-            - common_network
         depends_on:
             - rabbitmq
-
-    exchange-rates-ecb-openapi:
-        container_name: exchange-rates-ecb-openapi
-        hostname: exchange-rates-ecb-openapi
-        ports:
-            - 5000:80
-            - 5001:443
-        environment:
-            - ASPNETCORE_URLS=https://+;http://+
-            - Kestrel__Certificates__Default__Path=/app/Infrastructure/Certificate/cert-aspnetcore.pfx
-            - Kestrel__Certificates__Default__Password=SecretPassword        
-        build:
-            context: .
-            dockerfile: Exchange.Rates.Ecb.OpenApi/Dockerfile  
-        restart: on-failure
         networks:
             - common_network
-        depends_on:
-            - rabbitmq
 
-    exchange-rates-gateway:
-        container_name: exchange-rates-gateway
-        ports:
-            - 8000:80
-            - 8001:443
-        environment:
-            - ASPNETCORE_URLS=https://+;http://+
-            - Kestrel__Certificates__Default__Path=/app/Infrastructure/Certificate/cert-aspnetcore.pfx
-            - Kestrel__Certificates__Default__Password=SecretPassword
+    exchange.rates.gateway:
+        container_name: exchange.rates.gateway
+        image: ${DOCKER_REGISTRY-}exchangeratesgateway
         build:
             context: .
             dockerfile: Exchange.Rates.Gateway/Dockerfile
         restart: on-failure
         networks:
             - common_network
-        links:
-            - exchange-rates-ecb-openapi
-            - exchange-rates-coincap-openapi
         depends_on:
-            - exchange-rates-ecb-openapi
-            - exchange-rates-coincap-openapi
+            - exchange.rates.ecb.openapi
+            - exchange.rates.coincap.openapi
 
 networks:
   common_network: {}
+```
+and **Docker-compose.override.yml** file:
+```yml
+version: '3.4'
+
+services:
+    exchange.rates.coincap.openapi:
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Development
+            - ASPNETCORE_URLS=https://+:443;http://+:80
+            - Kestrel__Certificates__Default__Path=/app/Infrastructure/Certificate/cert-aspnetcore.pfx
+            - Kestrel__Certificates__Default__Password=SecretPassword
+        ports:
+            - 4000:80
+            - 4001:443
+        volumes:
+            - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+            - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
+    exchange.rates.coincap.polling.api:
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Development
+            - ASPNETCORE_URLS=https://+:443;http://+:80
+            - Kestrel__Certificates__Default__Path=/app/Infrastructure/Certificate/cert-aspnetcore.pfx
+            - Kestrel__Certificates__Default__Password=SecretPassword
+        ports:
+            - 7000:80
+            - 7001:443
+        volumes:
+            - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+            - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
+    exchange.rates.ecb.openapi:
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Development
+            - ASPNETCORE_URLS=https://+:443;http://+:80
+            - Kestrel__Certificates__Default__Path=/app/Infrastructure/Certificate/cert-aspnetcore.pfx
+            - Kestrel__Certificates__Default__Password=SecretPassword
+        ports:
+            - 5000:80
+            - 5001:443
+        volumes:
+            - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+            - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
+    exchange.rates.ecb.polling.api:
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Development
+            - ASPNETCORE_URLS=https://+:443;http://+:80
+            - Kestrel__Certificates__Default__Path=/app/Infrastructure/Certificate/cert-aspnetcore.pfx
+            - Kestrel__Certificates__Default__Password=SecretPassword
+        ports:
+            - 6000:80
+            - 6001:443
+        volumes:
+            - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+            - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
+    exchange.rates.gateway:
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Development
+            - ASPNETCORE_URLS=https://+:443;http://+:80
+            - Kestrel__Certificates__Default__Path=/app/Infrastructure/Certificate/cert-aspnetcore.pfx
+            - Kestrel__Certificates__Default__Password=SecretPassword
+        ports:
+            - 8000:80
+            - 8001:443
+        volumes:
+          - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+          - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
 ```
 **NOTE**: When starting multiple containers with a compose file, a **common_network** is created in **which all containers are using**. Containers can reach each other with the container name.
 
