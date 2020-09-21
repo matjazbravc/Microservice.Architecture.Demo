@@ -41,7 +41,7 @@ Microsoft and Amazon also provide API Gateway services on the cloud: [Azure API 
 For a sake of simplicity I didn't implement any Identity microservice. I've used a [Docker](https://www.docker.com/resources/what-container), so I didn't pollute my development environment with many things concurrently installed. I also assumed you know how to work using Docker workflow.
 
 Solution folder structure looks like this:  
-![](res/VSSolution.jpg)
+![](res/VS_Solution.jpg)
 
 ## Certificate
 Creating a Certificate to use ASP.NET Core with **HTTPS** in Docker you can create a certificate with command: **dotnet dev-certs https -ep [Path]-p [Password]**. I've created the certificate with SecretPassword as its password.
