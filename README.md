@@ -56,14 +56,8 @@ version: '3.4'
 services:
     rabbitmq:
         container_name: rabbitmq
-        hostname: rabbitmq
         image: 'rabbitmq:3.6-management-alpine'
-        ports:
-            - 5672:5672
-            - 15672:15672
-        environment:
-            - RABBITMQ_DEFAULT_USER=guest
-            - RABBITMQ_DEFAULT_PASS=guest
+        hostname: rabbitmq
         networks:
             - common_network
 
@@ -133,6 +127,14 @@ and **Docker-compose.override.yml** file:
 version: '3.4'
 
 services:
+    rabbitmq:
+        environment:
+            - RABBITMQ_DEFAULT_USER=guest
+            - RABBITMQ_DEFAULT_PASS=guest
+        ports:
+            - 5672:5672
+            - 15672:15672
+
     exchange.rates.coincap.openapi:
         environment:
             - ASPNETCORE_ENVIRONMENT=Development
