@@ -81,8 +81,14 @@ namespace Exchange.Rates.Ecb.Polling.Api
                 name: exchangeratesApiOptions[nameof(ExchangeratesApiOptions.Name)],
                 failureStatus: HealthStatus.Degraded);
 
-            services.AddHealthChecksUI()
-                .AddInMemoryStorage();
+            // https://localhost:{port}/healthchecks-ui
+            services.AddHealthChecksUI(opt =>
+            {
+                opt.SetEvaluationTimeInSeconds(15); // time in seconds between check
+                opt.MaximumHistoryEntriesPerEndpoint(60); // maximum history of checks
+                opt.SetApiMaxActiveRequests(1); // api requests concurrency
+            })
+            .AddInMemoryStorage();
 
             var handlerLifetimeMinutes = Convert.ToInt32(exchangeratesApiOptions[nameof(ExchangeratesApiOptions.HandlerLifetimeMinutes)]);
             services.AddHttpClient<IEcbExchangeRatesApi, EcbExchangeRatesApi>()
@@ -146,22 +152,19 @@ namespace Exchange.Rates.Ecb.Polling.Api
 
             app.UseRouting();
 
-            app.UseEndpoints(config =>
+            app.UseEndpoints(endpoints =>
             {
-                var rabbitmqUri = Environment.GetEnvironmentVariable("RABBITMQ_URI");
-                config.MapGet("/", async context =>
+                endpoints.MapHealthChecks("/healthz", new HealthCheckOptions()
                 {
-                    await context.Response.WriteAsync(SERVICE_NAME);
-                });
-
-                config.MapHealthChecks("/health", new HealthCheckOptions
-                {
-                    AllowCachingResponses = false,
                     Predicate = _ => true,
                     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
                 });
+                endpoints.MapHealthChecksUI();
 
-                config.MapHealthChecksUI();
+                endpoints.MapGet("/", async context =>
+                {
+                    await context.Response.WriteAsync(SERVICE_NAME);
+                });
             });
         }
 

@@ -46,9 +46,14 @@ namespace Exchange.Rates.Ecb.OpenApi
             // Register services in Installers folder
             services.AddServicesInAssembly(Configuration);
 
-            // https://localhost:5001/healthchecks-ui#/healthchecks
-            services.AddHealthChecksUI()
-                .AddInMemoryStorage();
+            // https://localhost:{port}/healthchecks-ui
+            services.AddHealthChecksUI(opt =>
+            {
+                opt.SetEvaluationTimeInSeconds(15); // time in seconds between check
+                opt.MaximumHistoryEntriesPerEndpoint(60); // maximum history of checks
+                opt.SetApiMaxActiveRequests(1); // api requests concurrency
+            })
+            .AddInMemoryStorage();
 
             // Formats the endpoint names usink kebab-case (dashed snake case)
             services.TryAddSingleton(KebabCaseEndpointNameFormatter.Instance);
@@ -115,19 +120,17 @@ namespace Exchange.Rates.Ecb.OpenApi
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHealthChecks("/healthz", new HealthCheckOptions()
+                {
+                    Predicate = _ => true,
+                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                });
+                endpoints.MapHealthChecksUI();
 
                 endpoints.MapGet("/", async context =>
                 {
                     await context.Response.WriteAsync(SERVICE_NAME);
                 });
-
-                endpoints.MapHealthChecks("/health", new HealthCheckOptions()
-                {
-                    Predicate = (check) => true,
-                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-                });
-
-                endpoints.MapHealthChecksUI();
             });
         }
     }
