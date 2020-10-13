@@ -52,19 +52,19 @@ After creating the certificate, you only have to share it with your container.
 ## Docker-Compose Files
 **Docker-compose.yml** file with setup for all the containers looks like this:
 ```yml
-version: '3.4'
+version: '3.6'
 
 services:
     rabbitmq:
         container_name: rabbitmq
-        image: 'rabbitmq:3.6-management-alpine'
+        image: rabbitmq:3.8-management-alpine
         hostname: rabbitmq
         networks:
             - common_network
 
     exchange.rates.coincap.openapi:
         container_name: exchange.rates.coincap.openapi
-        image: ${DOCKER_REGISTRY-}exchangeratescoincapopenapi
+        image: exchange.rates.coincap.openapi:latest
         build:
             context: .
             dockerfile: Exchange.Rates.CoinCap.OpenApi/Dockerfile
@@ -76,7 +76,7 @@ services:
 
     exchange.rates.coincap.polling.api:
         container_name: exchange.rates.coincap.polling.api
-        image: ${DOCKER_REGISTRY-}exchangeratescoincappollingapi
+        image: exchange.rates.coincap.polling.api:latest
         build:
             context: .
             dockerfile: Exchange.Rates.CoinCap.Polling.Api/Dockerfile
@@ -87,7 +87,7 @@ services:
 
     exchange.rates.ecb.openapi:
         container_name: exchange.rates.ecb.openapi
-        image: ${DOCKER_REGISTRY-}exchangeratesecbopenapi
+        image: exchange.rates.ecb.openapi:latest
         build:
             context: .
             dockerfile: Exchange.Rates.Ecb.OpenApi/Dockerfile
@@ -98,7 +98,7 @@ services:
 
     exchange.rates.ecb.polling.api:
         container_name: exchange.rates.ecb.polling.api
-        image: ${DOCKER_REGISTRY-}exchangeratesecbpollingapi
+        image: exchange.rates.ecb.polling.api:latest
         build:
             context: .
             dockerfile: Exchange.Rates.Ecb.Polling.Api/Dockerfile
@@ -109,7 +109,7 @@ services:
 
     exchange.rates.gateway:
         container_name: exchange.rates.gateway
-        image: ${DOCKER_REGISTRY-}exchangeratesgateway
+        image: exchange.rates.gateway:latest
         build:
             context: .
             dockerfile: Exchange.Rates.Gateway/Dockerfile
@@ -125,7 +125,7 @@ networks:
 ```
 and **Docker-compose.override.yml** file:
 ```yml
-version: '3.4'
+version: '3.6'
 
 services:
     rabbitmq:
@@ -200,7 +200,6 @@ services:
         volumes:
           - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
           - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
-
 ```
 **NOTE**: When starting multiple containers with a compose file, a **common_network** is created in **which all containers are using**. Containers can reach each other with the container name.
 
