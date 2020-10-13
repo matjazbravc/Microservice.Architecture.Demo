@@ -36,6 +36,7 @@ Microsoft and Amazon also provide API Gateway services on the cloud: [Azure API 
 * **Exchange.Rates.CoinCap.Polling.Api**: Service to retrieve crypto currencies info. It uses [CoinCap API 2.0](https://docs.coincap.io/)
 * **Exchange.Rates.Ecb.OpenApi**: REST for European Central Bank (ECB) Foreign exchange rates
 * **Exchange.Rates.Ecb.Polling.Api**: Service to retrieve ECB exchange rates. It uses [ECB Foreign exchange rates API](https://exchangeratesapi.io/)
+![](res/Diagram.png)
 
 ## Implementation
 For a sake of simplicity I didn't implement any Identity microservice. I've used a [Docker](https://www.docker.com/resources/what-container), so I didn't pollute my development environment with many things concurrently installed. I also assumed you know how to work using Docker workflow.
