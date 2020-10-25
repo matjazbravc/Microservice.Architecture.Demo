@@ -2,7 +2,6 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Ocelot.DependencyInjection;
 using System.IO;
 
 namespace Exchange.Rates.Gateway
@@ -24,7 +23,8 @@ namespace Exchange.Rates.Gateway
                         .SetBasePath(hostingContext.HostingEnvironment.ContentRootPath)
                         .AddJsonFile("appsettings.json", true, true)
                         .AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json", true, true)
-                        .AddOcelot(hostingContext.HostingEnvironment)
+                        .AddJsonFile("ocelot.json", optional: false, reloadOnChange: false)
+                        .AddJsonFile($"ocelot.{hostingContext.HostingEnvironment.EnvironmentName}.json", optional: true)
                         .AddEnvironmentVariables();
                 })
                 .UseStartup<Startup>()

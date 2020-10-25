@@ -9,13 +9,6 @@ using System;
 
 namespace Exchange.Rates.CoinCap.OpenApi.Controllers
 {
-    // Sample calls
-    // https://localhost:7005/swagger
-    // https://localhost:7005/api/exchangeratescoincap/usdbaserates?symbols=EUR,CHF
-    // https://localhost:7005/health
-    // https://localhost:7005/healthchecks-ui
-    // https://api.coincap.io/v2/assets/bitcoin
-
     [ApiController]
     [Produces("application/json")]
     [Route("api/[controller]")]

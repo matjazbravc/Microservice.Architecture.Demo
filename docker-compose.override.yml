@@ -11,7 +11,7 @@ services:
 
     exchange.rates.coincap.openapi:
         environment:
-            - ASPNETCORE_ENVIRONMENT=Development
+            - ASPNETCORE_ENVIRONMENT=Docker
             - ASPNETCORE_URLS=https://+:443;http://+:80
             - Kestrel__Certificates__Default__Path=/app/Infrastructure/Certificate/cert-aspnetcore.pfx
             - Kestrel__Certificates__Default__Password=SecretPassword
@@ -24,7 +24,7 @@ services:
 
     exchange.rates.coincap.polling.api:
         environment:
-            - ASPNETCORE_ENVIRONMENT=Development
+            - ASPNETCORE_ENVIRONMENT=Docker
             - ASPNETCORE_URLS=https://+:443;http://+:80
             - Kestrel__Certificates__Default__Path=/app/Infrastructure/Certificate/cert-aspnetcore.pfx
             - Kestrel__Certificates__Default__Password=SecretPassword
@@ -37,7 +37,7 @@ services:
 
     exchange.rates.ecb.openapi:
         environment:
-            - ASPNETCORE_ENVIRONMENT=Development
+            - ASPNETCORE_ENVIRONMENT=Docker
             - ASPNETCORE_URLS=https://+:443;http://+:80
             - Kestrel__Certificates__Default__Path=/app/Infrastructure/Certificate/cert-aspnetcore.pfx
             - Kestrel__Certificates__Default__Password=SecretPassword
@@ -50,7 +50,7 @@ services:
 
     exchange.rates.ecb.polling.api:
         environment:
-            - ASPNETCORE_ENVIRONMENT=Development
+            - ASPNETCORE_ENVIRONMENT=Docker
             - ASPNETCORE_URLS=https://+:443;http://+:80
             - Kestrel__Certificates__Default__Path=/app/Infrastructure/Certificate/cert-aspnetcore.pfx
             - Kestrel__Certificates__Default__Password=SecretPassword
@@ -63,7 +63,7 @@ services:
 
     exchange.rates.gateway:
         environment:
-            - ASPNETCORE_ENVIRONMENT=Development
+            - ASPNETCORE_ENVIRONMENT=Docker
             - ASPNETCORE_URLS=https://+:443;http://+:80
             - Kestrel__Certificates__Default__Path=/app/Infrastructure/Certificate/cert-aspnetcore.pfx
             - Kestrel__Certificates__Default__Password=SecretPassword

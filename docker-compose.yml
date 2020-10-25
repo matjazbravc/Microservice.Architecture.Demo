@@ -3,8 +3,8 @@ version: '3.6'
 services:
     rabbitmq:
         container_name: rabbitmq
-        image: rabbitmq:3.8-management-alpine
         hostname: rabbitmq
+        image: rabbitmq:3.8-management-alpine
         networks:
             - common_network
 

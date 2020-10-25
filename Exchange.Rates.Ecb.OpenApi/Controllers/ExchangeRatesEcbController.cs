@@ -9,13 +9,6 @@ using System;
 
 namespace Exchange.Rates.Ecb.OpenApi.Controllers
 {
-    // Sample calls
-    // https://localhost:5005/swagger
-    // https://localhost:5005/api/exchangeratesecb/usdbaserates?symbols=EUR,CHF
-    // https://localhost:5005/health
-    // https://localhost:5005/healthchecks-ui
-    // https://exchangeratesapi.io/
-
     [ApiController]
     [Produces("application/json")]
     [Route("api/[controller]")]
