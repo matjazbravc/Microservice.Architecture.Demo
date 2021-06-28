@@ -39,7 +39,7 @@ namespace Exchange.Rates.Ecb.OpenApi
                 options.Host = massTransitOptions[nameof(MassTransitOptions.Host)];
                 options.Username = massTransitOptions[nameof(MassTransitOptions.Username)];
                 options.Password = massTransitOptions[nameof(MassTransitOptions.Password)];
-                options.ReceiveEndpointName = massTransitOptions[nameof(MassTransitOptions.ReceiveEndpointName)];
+                options.QueueName = massTransitOptions[nameof(MassTransitOptions.QueueName)];
                 options.ReceiveEndpointPrefetchCount = Convert.ToInt32(massTransitOptions[nameof(MassTransitOptions.ReceiveEndpointPrefetchCount)]);
             });
 
@@ -58,23 +58,21 @@ namespace Exchange.Rates.Ecb.OpenApi
             // Formats the endpoint names usink kebab-case (dashed snake case)
             services.TryAddSingleton(KebabCaseEndpointNameFormatter.Instance);
 
-            // Add MassTransit support
-            services.AddMassTransit(config =>
-            {
-                // Add Service Bus
-                config.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
-                {
-                    cfg.UseHealthCheck(provider);
-                    cfg.Host(new Uri(massTransitOptions[nameof(MassTransitOptions.Host)]), hcfg =>
-                    {
-                        hcfg.Username(massTransitOptions[nameof(MassTransitOptions.Username)]);
-                        hcfg.Password(massTransitOptions[nameof(MassTransitOptions.Password)]);
-                    });
-                }));
-                config.AddRequestClient<SubmitEcbExchangeRateSymbols>();
-            });
+			// Add MassTransit support
+			services.AddMassTransit(x =>
+			{
+				x.AddBus(_ => Bus.Factory.CreateUsingRabbitMq(config =>
+				{
+					config.Host(new Uri(massTransitOptions[nameof(MassTransitOptions.Host)]), h =>
+					{
+						h.Username(massTransitOptions[nameof(MassTransitOptions.Username)]);
+						h.Password(massTransitOptions[nameof(MassTransitOptions.Password)]);
+					});
+				}));
+				x.AddRequestClient<SubmitEcbExchangeRateSymbols>();
+			});
 
-            services.AddMassTransitHostedService();
+			services.AddMassTransitHostedService();
             services.AddControllers()
                 .ConfigureApiBehaviorOptions(options =>
                 {

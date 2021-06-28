@@ -24,17 +24,18 @@ namespace Exchange.Rates.Ecb.Polling.Api.Services
             _logger = logger;
             _options = options.Value;
             _httpClient = httpClient;
-            _httpClient.DefaultRequestHeaders.Accept.Clear();
+			_httpClient.Timeout = TimeSpan.FromSeconds(15);
+			_httpClient.DefaultRequestHeaders.Accept.Clear();
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             _serializer = new JsonSerializer();
         }
 
-        public async Task<EcbCurrencyExchange> GetLatestRates(string symbols = "EUR")
+		public async Task<EcbCurrencyExchange> GetLatestRates(string symbols)
         {
             var result = new EcbCurrencyExchange();
             try
             {
-                var uri = new Uri(_options.Url).Append($"/latest?base=USD&symbols={symbols}").AbsoluteUri;
+                var uri = new Uri(_options.Url).Append($"/latest?access_key={_options.AccessKey}&base=EUR&symbols={symbols}").AbsoluteUri;
                 var isValid = Uri.IsWellFormedUriString(uri, UriKind.Absolute);
                 if (!isValid)
                 {
@@ -42,23 +43,19 @@ namespace Exchange.Rates.Ecb.Polling.Api.Services
                     return result;
                 }
                 var response = await _httpClient.GetAsync(uri).ConfigureAwait(false);
-                if (response.IsSuccessStatusCode == false)
+                if (!response.IsSuccessStatusCode)
                 {
                     _logger.LogCritical($"Exchange Rates API Failed with HTTP Status Code {response.StatusCode} at: {DateTimeOffset.Now}");
                     return result;
                 }
 
-                using (var sr = new StreamReader(await response.Content.ReadAsStreamAsync()))
+                using var sr = new StreamReader(await response.Content.ReadAsStreamAsync());
+                using var jsonTextReader = new JsonTextReader(sr);
+                result = _serializer.Deserialize<EcbCurrencyExchange>(jsonTextReader);
+                if (result is {Rates: null})
                 {
-                    using (var jsonTextReader = new JsonTextReader(sr))
-                    {
-                        result = _serializer.Deserialize<EcbCurrencyExchange>(jsonTextReader);
-                        if (result.Rates == null)
-                        {
-                            _logger.LogCritical($"Exchange rates not returned from API");
-                            return result;
-                        }
-                    }
+	                _logger.LogCritical("Exchange rates not returned from API");
+	                return result;
                 }
             }
             catch (Exception ex)

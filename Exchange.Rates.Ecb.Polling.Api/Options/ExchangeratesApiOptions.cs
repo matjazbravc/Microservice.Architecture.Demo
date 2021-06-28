@@ -10,5 +10,7 @@ namespace Exchange.Rates.Ecb.Polling.Api.Options
         public string Name { get; set; }
 
         public string Url { get; set; }
+        
+		public string AccessKey { get; set; }
     }
 }

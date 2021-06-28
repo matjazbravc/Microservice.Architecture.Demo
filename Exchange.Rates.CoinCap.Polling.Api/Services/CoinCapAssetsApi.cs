@@ -24,12 +24,13 @@ namespace Exchange.Rates.CoinCap.Polling.Api.Services
             _logger = logger;
             _options = options.Value;
             _httpClient = httpClient;
-            _httpClient.DefaultRequestHeaders.Accept.Clear();
+			_httpClient.Timeout = TimeSpan.FromSeconds(15);
+			_httpClient.DefaultRequestHeaders.Accept.Clear();
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             _serializer = new JsonSerializer();
         }
 
-        public async Task<CoinCapAsset> GetAssetData(string id = "bitcoin")
+        public async Task<CoinCapAsset> GetAssetData(string id)
         {
             var result = new CoinCapAsset();
             try
@@ -42,23 +43,19 @@ namespace Exchange.Rates.CoinCap.Polling.Api.Services
                     return result;
                 }
                 var response = await _httpClient.GetAsync(uri).ConfigureAwait(false);
-                if (response.IsSuccessStatusCode == false)
+                if (!response.IsSuccessStatusCode)
                 {
                     _logger.LogCritical($"CoinCap API Failed with HTTP Status Code {response.StatusCode} at: {DateTimeOffset.Now}");
                     return result;
                 }
 
-                using (var sr = new StreamReader(await response.Content.ReadAsStreamAsync()))
+                using var sr = new StreamReader(await response.Content.ReadAsStreamAsync());
+                using var jsonTextReader = new JsonTextReader(sr);
+                result = _serializer.Deserialize<CoinCapAsset>(jsonTextReader);
+                if (result is {Data: null})
                 {
-                    using (var jsonTextReader = new JsonTextReader(sr))
-                    {
-                        result = _serializer.Deserialize<CoinCapAsset>(jsonTextReader);
-                        if (result.Data == null)
-                        {
-                            _logger.LogCritical($"Assets not returned from API");
-                            return result;
-                        }
-                    }
+	                _logger.LogCritical("Assets not returned from API");
+	                return result;
                 }
             }
             catch (Exception ex)

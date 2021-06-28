@@ -6,11 +6,11 @@ using Xunit;
 
 namespace Exchange.Rates.Tests.UnitTests
 {
-    public class CoinCapAssetsApiTests : IClassFixture<WebApplicationFactory<Exchange.Rates.CoinCap.Polling.Api.Startup>>
+    public class CoinCapAssetsApiTests : IClassFixture<WebApplicationFactory<CoinCap.Polling.Api.Startup>>
     {
-        private readonly WebApplicationFactory<Exchange.Rates.CoinCap.Polling.Api.Startup> _factory;
+        private readonly WebApplicationFactory<CoinCap.Polling.Api.Startup> _factory;
 
-        public CoinCapAssetsApiTests(WebApplicationFactory<Exchange.Rates.CoinCap.Polling.Api.Startup> factory)
+        public CoinCapAssetsApiTests(WebApplicationFactory<CoinCap.Polling.Api.Startup> factory)
         {
             _factory = factory;
         }

@@ -20,33 +20,31 @@ namespace Exchange.Rates.CoinCap.Polling.Api.Consumers
 
         public async Task Consume(ConsumeContext<SubmitCoinCapAssetId> context)
         {
-            if (context.RequestId != null)
+	        _logger.LogDebug(nameof(Consume));
+			if (context.RequestId != null && !string.IsNullOrWhiteSpace(context.Message.Id))
             {
-                if (!string.IsNullOrWhiteSpace(context.Message.Id))
-                {
-                    var result = await _coinCapAssetsApi.GetAssetData(context.Message.Id).ConfigureAwait(false);
-                    if (result.Data == null)
-                    {
-                        await context.RespondAsync<CoinCapAssetRejected>(new
-                        {
-                            context.Message.EventId,
-                            InVar.Timestamp,
-                            context.Message.Id,
-                            Reason = $"Asset Data for a {context.Message.Id} is not available"
-                        });
-                    }
-                    else
-                    {
-                        await context.RespondAsync<CoinCapAssetAccepted>(new
-                        {
-                            context.Message.EventId,
-                            InVar.Timestamp,
-                            context.Message.Id,
-                            AssetData = result,
-                            Message = $"Asset Data"
-                        });
-                    }
-                }
+	            var result = await _coinCapAssetsApi.GetAssetData(context.Message.Id).ConfigureAwait(false);
+	            if (result.Data == null)
+	            {
+		            await context.RespondAsync<CoinCapAssetRejected>(new
+		            {
+			            context.Message.EventId,
+			            InVar.Timestamp,
+			            context.Message.Id,
+			            Reason = $"Asset Data for a {context.Message.Id} is not available"
+		            });
+	            }
+	            else
+	            {
+		            await context.RespondAsync<CoinCapAssetAccepted>(new
+		            {
+			            context.Message.EventId,
+			            InVar.Timestamp,
+			            context.Message.Id,
+			            AssetData = result,
+			            Message = "Asset Data"
+		            });
+	            }
             }
         }
     }

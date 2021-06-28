@@ -52,7 +52,7 @@ namespace Exchange.Rates.CoinCap.Polling.Api
                 options.Host = massTransitOptions[nameof(MassTransitOptions.Host)];
                 options.Username = massTransitOptions[nameof(MassTransitOptions.Username)];
                 options.Password = massTransitOptions[nameof(MassTransitOptions.Password)];
-                options.ReceiveEndpointName = massTransitOptions[nameof(MassTransitOptions.ReceiveEndpointName)];
+                options.QueueName = massTransitOptions[nameof(MassTransitOptions.QueueName)];
                 options.ReceiveEndpointPrefetchCount = Convert.ToInt32(massTransitOptions[nameof(MassTransitOptions.ReceiveEndpointPrefetchCount)]);
             });
 
@@ -96,42 +96,36 @@ namespace Exchange.Rates.CoinCap.Polling.Api
                 .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler()
                 {
                     ClientCertificateOptions = ClientCertificateOption.Manual,
-                    ServerCertificateCustomValidationCallback = (httpRequestMessage, cert, cetChain, policyErrors) =>
-                    {
-                        return true;
-                    }
+                    ServerCertificateCustomValidationCallback = (_, _, _, _) => true
                 })
                 .SetHandlerLifetime(TimeSpan.FromMinutes(handlerLifetimeMinutes));
 
             // Formats the endpoint names usink kebab-case (dashed snake case)
             services.TryAddSingleton(KebabCaseEndpointNameFormatter.Instance);
 
-            // Add MassTransit support
-            services.AddMassTransit(config =>
-            {
-                // Automatically discover Consumers
-                config.AddConsumers(Assembly.GetExecutingAssembly());
+			// Add MassTransit support
+			services.AddMassTransit(x =>
+			{
+				// Automatically discover Consumers
+				x.AddConsumers(Assembly.GetExecutingAssembly());
+				x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
+				{
+					cfg.Host(new Uri(massTransitOptions[nameof(MassTransitOptions.Host)]), h =>
+					{
+						h.Username(massTransitOptions[nameof(MassTransitOptions.Username)]);
+						h.Password(massTransitOptions[nameof(MassTransitOptions.Password)]);
+					});
+					cfg.ReceiveEndpoint(massTransitOptions[nameof(MassTransitOptions.QueueName)], ecfg =>
+					{
+						ecfg.PrefetchCount = Convert.ToInt16(massTransitOptions[nameof(MassTransitOptions.ReceiveEndpointPrefetchCount)]);
+						ecfg.ConfigureConsumers(provider);
+						ecfg.UseMessageRetry(r => r.Interval(5, 1000));
+						ecfg.UseJsonSerializer();
+					});
+				}));
+			});
 
-                // Add Service Bus
-                config.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
-                {
-                    cfg.UseHealthCheck(provider);
-                    cfg.Host(new Uri(massTransitOptions[nameof(MassTransitOptions.Host)]), hcfg =>
-                    {
-                        hcfg.Username(massTransitOptions[nameof(MassTransitOptions.Username)]);
-                        hcfg.Password(massTransitOptions[nameof(MassTransitOptions.Password)]);
-                    });
-                    cfg.ReceiveEndpoint(massTransitOptions[nameof(MassTransitOptions.ReceiveEndpointName)], ecfg =>
-                    {
-                        ecfg.PrefetchCount = Convert.ToUInt16(massTransitOptions[nameof(MassTransitOptions.ReceiveEndpointPrefetchCount)]);
-                        ecfg.ConfigureConsumers(provider);
-                        ecfg.UseMessageRetry(r => r.Interval(5, 1000));
-                        ecfg.UseJsonSerializer();
-                    });
-                }));
-            });
-
-            services.AddMassTransitHostedService();
+			services.AddMassTransitHostedService();
             services.AddCors();
             services.AddRouting(options => options.LowercaseUrls = true);
         }

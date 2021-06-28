@@ -11,7 +11,7 @@ namespace Exchange.Rates.CoinCap.Polling.Api.Consumers
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine();
-            Console.WriteLine($"There was an error with requesting a SubmitCoinCapAssetId");
+            Console.WriteLine("There was an error with requesting a SubmitCoinCapAssetId");
             Console.ResetColor();
             return Task.CompletedTask;
         }

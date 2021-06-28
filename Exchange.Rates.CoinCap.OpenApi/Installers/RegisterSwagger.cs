@@ -17,17 +17,18 @@ namespace Exchange.Rates.CoinCap.OpenApi.Installers
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = $"Exchange.Rates.CoinCap.OpenApi",
+                    Title = "Exchange.Rates.CoinCap.OpenApi",
                     Description = "API for real-time pricing and market activity for over 1,000 cryptocurrencies"
                 });
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlDocFile = Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, xmlFile);
-                if (File.Exists(xmlDocFile))
+                if (!File.Exists(xmlDocFile))
                 {
-                    options.IncludeXmlComments(xmlDocFile);
-                    options.DescribeAllParametersInCamelCase();
-                    options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+	                return;
                 }
+                options.IncludeXmlComments(xmlDocFile);
+                options.DescribeAllParametersInCamelCase();
+                options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
             });
         }
     }

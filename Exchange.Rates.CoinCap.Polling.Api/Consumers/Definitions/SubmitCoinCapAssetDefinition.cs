@@ -13,7 +13,7 @@ namespace Exchange.Rates.CoinCap.Polling.Api.Consumers.Definitions
         public SubmitCoinCapAssetDefinition(IOptions<MassTransitOptions> options)
         {
             // Override the default endpoint name, for whatever reason
-            EndpointName = options.Value.ReceiveEndpointName;
+            EndpointName = options.Value.QueueName;
 
             // Limit the number of messages consumed concurrently
             // this applies to the consumer only, not the endpoint

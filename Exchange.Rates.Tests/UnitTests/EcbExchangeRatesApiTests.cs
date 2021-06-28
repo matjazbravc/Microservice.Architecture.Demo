@@ -8,9 +8,9 @@ namespace Exchange.Rates.Tests.UnitTests
 {
     public class EcbExchangeRatesApiTests : IClassFixture<WebApplicationFactory<Exchange.Rates.Ecb.Polling.Api.Startup>>
     {
-        private readonly WebApplicationFactory<Exchange.Rates.Ecb.Polling.Api.Startup> _factory;
+        private readonly WebApplicationFactory<Ecb.Polling.Api.Startup> _factory;
 
-        public EcbExchangeRatesApiTests(WebApplicationFactory<Exchange.Rates.Ecb.Polling.Api.Startup> factory)
+        public EcbExchangeRatesApiTests(WebApplicationFactory<Ecb.Polling.Api.Startup> factory)
         {
             _factory = factory;
         }
@@ -21,7 +21,7 @@ namespace Exchange.Rates.Tests.UnitTests
             // Arrange
             var service = _factory.Services.GetRequiredService<IEcbExchangeRatesApi>();
             // Act
-            var result = await service.GetLatestRates("EUR").ConfigureAwait(false);
+            var result = await service.GetLatestRates().ConfigureAwait(false);
             // Assert
             Assert.NotNull(result.Rates);
         }

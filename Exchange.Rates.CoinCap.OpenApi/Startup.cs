@@ -39,7 +39,7 @@ namespace Exchange.Rates.CoinCap.OpenApi
                 options.Host = massTransitOptions[nameof(MassTransitOptions.Host)];
                 options.Username = massTransitOptions[nameof(MassTransitOptions.Username)];
                 options.Password = massTransitOptions[nameof(MassTransitOptions.Password)];
-                options.ReceiveEndpointName = massTransitOptions[nameof(MassTransitOptions.ReceiveEndpointName)];
+                options.QueueName = massTransitOptions[nameof(MassTransitOptions.QueueName)];
                 options.ReceiveEndpointPrefetchCount = Convert.ToInt32(massTransitOptions[nameof(MassTransitOptions.ReceiveEndpointPrefetchCount)]);
             });
 
@@ -58,21 +58,19 @@ namespace Exchange.Rates.CoinCap.OpenApi
             // Formats the endpoint names usink kebab-case (dashed snake case)
             services.TryAddSingleton(KebabCaseEndpointNameFormatter.Instance);
 
-            // Add MassTransit support
-            services.AddMassTransit(config =>
-            {
-                // https://stackoverflow.com/questions/45589304/masstransit-cannot-access-host-machine-rabbitmq-from-a-docker-container
-                config.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
-                {
-                    cfg.UseHealthCheck(provider);
-                    cfg.Host(new Uri(massTransitOptions[nameof(MassTransitOptions.Host)]), hcfg =>
-                    {
-                        hcfg.Username(massTransitOptions[nameof(MassTransitOptions.Username)]);
-                        hcfg.Password(massTransitOptions[nameof(MassTransitOptions.Password)]);
-                    });
-                }));
-                config.AddRequestClient<SubmitCoinCapAssetId>();
-            });
+			// Add MassTransit support
+			services.AddMassTransit(x =>
+			{
+				x.AddBus(_ => Bus.Factory.CreateUsingRabbitMq(config =>
+				{
+					config.Host(new Uri(massTransitOptions[nameof(MassTransitOptions.Host)]), h =>
+					{
+						h.Username(massTransitOptions[nameof(MassTransitOptions.Username)]);
+						h.Password(massTransitOptions[nameof(MassTransitOptions.Password)]);
+					});
+				}));
+				x.AddRequestClient<SubmitCoinCapAssetId>();
+			});
 
             services.AddMassTransitHostedService();
             services.AddControllers()

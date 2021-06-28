@@ -28,16 +28,16 @@ namespace Exchange.Rates.Ecb.OpenApi.Controllers
         /// UsdBaseRates endpoint
         /// </summary>
         /// <remarks>
-        /// Exchange rates quoted against the USD. Example Symbols list: EUR,CHF,CZK
+        /// Exchange rates quoted against the EUR. Example Symbols list: USD,CHF,CZK
         /// </remarks>
         /// <param name="model">Currency symbols</param>
         /// <returns></returns>
         /// <response code="200">Returned if everything is ok</response>
         /// <response code="400">Returned if something went wrong</response>
-        [HttpGet("usdbaserates")]
+        [HttpGet("eurbaserates")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UsdBaseRates([FromQuery] SymbolsSubmissionModel model)
+        public async Task<IActionResult> EurBaseRates([FromQuery] SymbolsSubmissionModel model)
         {
             try
             {
@@ -64,9 +64,9 @@ namespace Exchange.Rates.Ecb.OpenApi.Controllers
                 if (accepted.IsCompleted)
                 {
                     await accepted.ConfigureAwait(false);
-                    var errMessage = "Symbols were not accepted. Please check the syntax!";
-                    _logger.LogError(errMessage);
-                    return Problem(errMessage);
+                    const string ERR_MESSAGE = "Symbols were not accepted. Please check the syntax!";
+                    _logger.LogError(ERR_MESSAGE);
+                    return Problem(ERR_MESSAGE);
                 }
                 else
                 {

@@ -45,7 +45,7 @@ namespace Exchange.Rates.Ecb.Polling.Api.Consumers
                             InVar.Timestamp,
                             context.Message.Symbols,
                             CurrencyExchange = result,
-                            Message = $"Exchange Rates Symbols"
+                            Message = "Exchange Rates Symbols"
                         });
                     }
                 }

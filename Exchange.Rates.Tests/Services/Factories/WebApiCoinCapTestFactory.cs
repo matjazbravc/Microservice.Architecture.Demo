@@ -1,11 +1,10 @@
+using Exchange.Rates.CoinCap.OpenApi;
+using Exchange.Rates.Tests.Services.Startups;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Exchange.Rates.CoinCap.OpenApi;
 using System.IO;
-using Exchange.Rates.Tests.Services.Startups;
 
 namespace Exchange.Rates.Tests.Services.Factories
 {
@@ -31,8 +30,7 @@ namespace Exchange.Rates.Tests.Services.Factories
                 .UseContentRoot(".")
                 .ConfigureTestServices(services =>
                 {
-                    // Build the service provider
-                    var sp = services.BuildServiceProvider();
+                    services.BuildServiceProvider();
                 });
 
             // Call base Configuration
@@ -43,7 +41,7 @@ namespace Exchange.Rates.Tests.Services.Factories
         {
             var hostBuilder = new WebHostBuilder()
                 .UseContentRoot(Directory.GetCurrentDirectory())
-                .ConfigureAppConfiguration((context, config) =>
+                .ConfigureAppConfiguration((context, _) =>
                 {
                     context.HostingEnvironment.ApplicationName = typeof(Program).Assembly.GetName().Name;
                 })

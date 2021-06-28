@@ -6,7 +6,7 @@ namespace Exchange.Rates.Ecb.OpenApi.Models
     public sealed class SymbolsSubmissionModel
     {
         /// <summary>
-        /// Currency symbols list. Ex: EUR,CHF,CZK
+        /// Currency symbols list. Ex: USD,CHF,CZK
         /// </summary>
         [Required]
         [FromQuery(Name = "Symbols")]

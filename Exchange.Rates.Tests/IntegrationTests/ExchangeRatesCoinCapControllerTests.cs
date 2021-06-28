@@ -20,8 +20,8 @@ namespace Exchange.Rates.Tests.IntegrationTests
         [Fact]
         public async Task AssetInfoTest()
         {
-            var id = "bitcoin";
-            var result = await _httpClientHelper.GetAsync<string>(BASE_URL + $"assetinfo?id={id}").ConfigureAwait(false);
+            const string ID = "bitcoin";
+            var result = await _httpClientHelper.GetAsync<string>(BASE_URL + $"assetinfo?id={ID}").ConfigureAwait(false);
             Assert.NotNull(result);
         }
     }

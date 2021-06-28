@@ -17,17 +17,18 @@ namespace Exchange.Rates.Ecb.OpenApi.Installers
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = $"Exchange.Rates.Ecb.OpenApi",
+                    Title = "Exchange.Rates.Ecb.OpenApi",
                     Description = "ECB Foreign exchange rates published by the European Central Bank"
                 });
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlDocFile = Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, xmlFile);
-                if (File.Exists(xmlDocFile))
+                if (!File.Exists(xmlDocFile))
                 {
-                    options.IncludeXmlComments(xmlDocFile);
-                    options.DescribeAllParametersInCamelCase();
-                    options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+	                return;
                 }
+                options.IncludeXmlComments(xmlDocFile);
+                options.DescribeAllParametersInCamelCase();
+                options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
             });
         }
     }

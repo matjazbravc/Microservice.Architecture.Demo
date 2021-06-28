@@ -18,10 +18,10 @@ namespace Exchange.Rates.Tests.IntegrationTests
         }
 
         [Fact]
-        public async Task UsdBaseRatesTest()
+        public async Task EurbaseRatesTest()
         {
-            var symbols = "EUR,CHF,CZK";
-            var result = await _httpClientHelper.GetAsync<string>(BASE_URL + $"usdbaserates?symbols={symbols}").ConfigureAwait(false);
+            const string SYMBOLS = "USD,CHF";
+            var result = await _httpClientHelper.GetAsync<string>(BASE_URL + $"eurbaserates?symbols={SYMBOLS}").ConfigureAwait(false);
             Assert.NotNull(result);
         }
     }

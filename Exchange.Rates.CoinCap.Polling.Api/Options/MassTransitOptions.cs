@@ -11,7 +11,7 @@ namespace Exchange.Rates.CoinCap.Polling.Api.Options
         
         public string Password { get; set; }
         
-        public string ReceiveEndpointName { get; set; }
+        public string QueueName { get; set; }
         
         public int ReceiveEndpointPrefetchCount { get; set; } = 16;
     }
