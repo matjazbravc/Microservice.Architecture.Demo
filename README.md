@@ -226,13 +226,15 @@ Let’s try to access **CoinCap API** through API Gateway:
 And access **Ecb API** through API Gateway:
 **https://localhost:8001/exchangeratesecb/eurbaserates?symbols=USD,CHF,CZK**
 ![](res/Gateway_Ecb.jpg)
-Works perfectly!
+
 ## Testing
-Test project includes both Unit and Integration tests:  
+Test project includes both Unit and Integration tests:
 ![](res/Tests.jpg)
 
 ## Conclusion
-From today’s DevOps position it is necessary to change applications fast and often. Additionally, microservices should run inside a container and Docker is the defacto standard container. Enjoy!
+From today’s DevOps position it is necessary to change applications fast and often. Additionally, microservices should run inside a container and Docker is the defacto standard container.
+
+Enjoy!
 
 ## Prerequisites
 - [Visual Studio](https://www.visualstudio.com/vs/community) 2019 16.4.5 or greater
