@@ -213,15 +213,15 @@ To check all running Containers use **docker ps**.
 ## Runnig in Docker
 ![](res/DockerRunning.jpg)
 
-## Swagger UI for Exchange.Rates.CoinCap.OpenApi
+## Swagger UI for [Exchange.Rates.CoinCap.OpenApi](https://localhost:4001/swagger/index.html)
 ![](res/CoinCapOpenApi.jpg)
 
-## Swagger UI for Exchange.Rates.Ecb.OpenApi
+## Swagger UI for [Exchange.Rates.Ecb.OpenApi](https://localhost:5001/swagger/index.html)
 ![](res/EcbOpenApi.jpg)
 
 ## Call Gateway
 Let’s try to access **CoinCap API** through API Gateway:
-**https://localhost:8001/exchangeratescoincap/assetinfo?id=bitcoin**
+**https://localhost:8001/exchangeratescoincap/assetinfo?id=ethereum**
 ![](res/Gateway.jpg)
 And access **Ecb API** through API Gateway:
 **https://localhost:8001/exchangeratesecb/eurbaserates?symbols=USD,CHF,CZK**
