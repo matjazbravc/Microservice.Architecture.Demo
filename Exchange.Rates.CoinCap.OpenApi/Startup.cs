@@ -1,6 +1,7 @@
-using Exchange.Rates.Contracts.Messages;
 using Exchange.Rates.CoinCap.OpenApi.Extensions;
+using Exchange.Rates.CoinCap.OpenApi.Filters;
 using Exchange.Rates.CoinCap.OpenApi.Options;
+using Exchange.Rates.Contracts.Messages;
 using HealthChecks.UI.Client;
 using MassTransit.Definition;
 using MassTransit;
@@ -46,8 +47,18 @@ namespace Exchange.Rates.CoinCap.OpenApi
             // Register services in Installers folder
             services.AddServicesInAssembly(Configuration);
 
-            // https://localhost:{port}/healthchecks-ui
-            services.AddHealthChecksUI(opt =>
+            // Register the Swagger generator
+            services.AddSwaggerGen(options =>
+            {
+	            // Enable Swagger annotations
+	            options.EnableAnnotations();
+
+	            // Application Controller's API document description information
+	            options.DocumentFilter<SwaggerDocumentFilter>();
+            });
+
+			// https://localhost:{port}/healthchecks-ui
+			services.AddHealthChecksUI(opt =>
             {
                 opt.SetEvaluationTimeInSeconds(15); // time in seconds between check
                 opt.MaximumHistoryEntriesPerEndpoint(60); // maximum history of checks

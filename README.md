@@ -35,7 +35,7 @@ Microsoft and Amazon also provide API Gateway services on the cloud: [Azure API 
 * **Exchange.Rates.CoinCap.OpenApi**: REST for retrieving pricing and market activity for crypto currencies
 * **Exchange.Rates.CoinCap.Polling.Api**: Service to retrieve crypto currencies info. It uses [CoinCap API 2.0](https://docs.coincap.io/)
 * **Exchange.Rates.Ecb.OpenApi**: REST for European Central Bank (ECB) Foreign exchange rates
-* **Exchange.Rates.Ecb.Polling.Api**: Service to retrieve ECB exchange rates. It uses [ECB Foreign exchange rates API](https://exchangeratesapi.io/)
+* **Exchange.Rates.Ecb.Polling.Api**: Service to retrieve ECB exchange rates. It uses [ECB Foreign exchange rates API](https://exchangeratesapi.io/). Since you will need an API Key you have to [Sign Up](https://exchangeratesapi.io/pricing/).
 
 Each service is hosted in it's own Docker container (take a look into docker-compose project).
 
@@ -207,7 +207,7 @@ services:
 **NOTE**: When starting multiple containers with a compose file, a **common_network** is created in **which all containers are using**. Containers can reach each other with the container name.
 
 ## Setup the Containers
-To execute compose file, open Powershell, and navigate to the compose file in the root folder. Then execute the following command: **docker-compose up -d**. The -d parameter executes the command detached. This means that the containers run in the background and don’t block your Powershell window.
+To execute compose file, open Powershell, and navigate to the compose file in the root folder. Then execute the following command: **docker-compose up -d --build --remove-orphans**. The -d parameter executes the command detached. This means that the containers run in the background and don’t block your Powershell window.
 To check all running Containers use **docker ps**.
 
 ## Runnig in Docker
@@ -220,11 +220,11 @@ To check all running Containers use **docker ps**.
 ![](res/EcbOpenApi.jpg)
 
 ## Call Gateway
-Let’s try to access **CoinCap API** through API Gateway:  
+Let’s try to access **CoinCap API** through API Gateway:
 **https://localhost:8001/exchangeratescoincap/assetinfo?id=bitcoin**
 ![](res/Gateway.jpg)
-And access **Ecb API** through API Gateway:  
-**https://localhost:8001/exchangeratesecb/usdbaserates?symbols=EUR,CHF,CZK**
+And access **Ecb API** through API Gateway:
+**https://localhost:8001/exchangeratesecb/eurbaserates?symbols=USD,CHF,CZK**
 ![](res/Gateway_Ecb.jpg)
 Works perfectly!
 ## Testing

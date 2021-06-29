@@ -12,18 +12,18 @@
       "UpstreamPathTemplate": "/exchangeratescoincap/assetinfo",
       "UpstreamHttpMethod": [ "GET", "OPTIONS" ]
     },
-    {
-      "DownstreamPathTemplate": "/api/exchangeratesecb/usdbaserates",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "exchange.rates.ecb.openapi",
-          "Port": 80
-        }
-      ],
-      "UpstreamPathTemplate": "/exchangeratesecb/usdbaserates",
-      "UpstreamHttpMethod": [ "GET", "OPTIONS" ]
-    }
+		{
+			"DownstreamPathTemplate": "/api/exchangeratesecb/eurbaserates",
+			"DownstreamScheme": "http",
+			"DownstreamHostAndPorts": [
+				{
+					"Host": "exchange.rates.ecb.openapi",
+					"Port": 80
+				}
+			],
+			"UpstreamPathTemplate": "/exchangeratesecb/eurbaserates",
+			"UpstreamHttpMethod": [ "GET", "OPTIONS" ]
+		}
   ],
   "GlobalConfiguration": {}
 }
