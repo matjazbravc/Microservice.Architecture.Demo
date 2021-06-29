@@ -55,7 +55,7 @@ After creating the certificate, you only have to share it with your container.
 ## Docker-Compose Files
 **Docker-compose.yml** file with setup for all the containers looks like this:
 ```yml
-version: '3.6'
+version: '3.9'
 
 services:
     rabbitmq:
@@ -128,7 +128,7 @@ networks:
 ```
 and **Docker-compose.override.yml** file:
 ```yml
-version: '3.6'
+version: '3.9'
 
 services:
     rabbitmq:
