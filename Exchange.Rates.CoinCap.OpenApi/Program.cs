@@ -5,39 +5,38 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using System.IO;
 
-namespace Exchange.Rates.CoinCap.OpenApi
-{
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            CreateHostBuilder(args).Build().Run();
-        }
+namespace Exchange.Rates.CoinCap.OpenApi;
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-            .UseSerilog((hostingContext, loggerConfiguration) => loggerConfiguration
-                .ReadFrom.Configuration(hostingContext.Configuration)
-                .Enrich.FromLogContext())
-            .UseContentRoot(Directory.GetCurrentDirectory())
-            .UseDefaultServiceProvider(options => options.ValidateScopes = false)
-            .ConfigureWebHostDefaults(webBuilder =>
-            {
-                webBuilder.UseStartup<Startup>();
-            })
-            .ConfigureAppConfiguration((builderContext, config) =>
-            {
-                var env = builderContext.HostingEnvironment;
-                config.SetBasePath(env.ContentRootPath);
-                config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
-                config.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
-                config.AddEnvironmentVariables();
-            })
-            .ConfigureLogging((builderContext, logging) =>
-            {
-                logging.ClearProviders();
-                logging.AddConsole();
-                logging.AddSerilog();
-            });
-    }
+public class Program
+{
+  public static void Main(string[] args)
+  {
+    CreateHostBuilder(args).Build().Run();
+  }
+
+  public static IHostBuilder CreateHostBuilder(string[] args) =>
+      Host.CreateDefaultBuilder(args)
+      .UseSerilog((hostingContext, loggerConfiguration) => loggerConfiguration
+          .ReadFrom.Configuration(hostingContext.Configuration)
+          .Enrich.FromLogContext())
+      .UseContentRoot(Directory.GetCurrentDirectory())
+      .UseDefaultServiceProvider(options => options.ValidateScopes = false)
+      .ConfigureWebHostDefaults(webBuilder =>
+      {
+        webBuilder.UseStartup<Startup>();
+      })
+      .ConfigureAppConfiguration((builderContext, config) =>
+      {
+        var env = builderContext.HostingEnvironment;
+        config.SetBasePath(env.ContentRootPath);
+        config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+        config.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
+        config.AddEnvironmentVariables();
+      })
+      .ConfigureLogging((builderContext, logging) =>
+      {
+        logging.ClearProviders();
+        logging.AddConsole();
+        logging.AddSerilog();
+      });
 }

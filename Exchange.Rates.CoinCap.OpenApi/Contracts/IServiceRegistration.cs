@@ -1,10 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Exchange.Rates.CoinCap.OpenApi.Contracts
+namespace Exchange.Rates.CoinCap.OpenApi.Contracts;
+
+public interface IServiceRegistration
 {
-    public interface IServiceRegistration
-    {
-        void Register(IServiceCollection services, IConfiguration configuration);
-    }
+  void Register(IServiceCollection services, IConfiguration configuration);
 }

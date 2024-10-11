@@ -4,48 +4,47 @@ using MassTransit;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
-namespace Exchange.Rates.CoinCap.Polling.Api.Consumers
+namespace Exchange.Rates.CoinCap.Polling.Api.Consumers;
+
+public sealed class SubmitCoinCapAssetConsumer : IConsumer<ISubmitCoinCapAssetId>
 {
-    public sealed class SubmitCoinCapAssetConsumer : IConsumer<SubmitCoinCapAssetId>
+  private readonly ILogger<SubmitCoinCapAssetConsumer> _logger;
+  private readonly ICoinCapAssetsApi _coinCapAssetsApi;
+
+  public SubmitCoinCapAssetConsumer(ILogger<SubmitCoinCapAssetConsumer> logger,
+      ICoinCapAssetsApi coinCapAssetsApi)
+  {
+    _logger = logger;
+    _coinCapAssetsApi = coinCapAssetsApi;
+  }
+
+  public async Task Consume(ConsumeContext<ISubmitCoinCapAssetId> context)
+  {
+    _logger.LogDebug(nameof(Consume));
+    if (context.RequestId != null && !string.IsNullOrWhiteSpace(context.Message.Id))
     {
-        private readonly ILogger<SubmitCoinCapAssetConsumer> _logger;
-        private readonly ICoinCapAssetsApi _coinCapAssetsApi;
-
-        public SubmitCoinCapAssetConsumer(ILogger<SubmitCoinCapAssetConsumer> logger,
-            ICoinCapAssetsApi coinCapAssetsApi)
+      var result = await _coinCapAssetsApi.GetAssetData(context.Message.Id).ConfigureAwait(false);
+      if (result.Data == null)
+      {
+        await context.RespondAsync<ICoinCapAssetRejected>(new
         {
-            _logger = logger;
-            _coinCapAssetsApi = coinCapAssetsApi;
-        }
-
-        public async Task Consume(ConsumeContext<SubmitCoinCapAssetId> context)
+          context.Message.EventId,
+          InVar.Timestamp,
+          context.Message.Id,
+          Reason = $"Asset Data for a {context.Message.Id} is not available"
+        });
+      }
+      else
+      {
+        await context.RespondAsync<ICoinCapAssetAccepted>(new
         {
-	        _logger.LogDebug(nameof(Consume));
-			if (context.RequestId != null && !string.IsNullOrWhiteSpace(context.Message.Id))
-            {
-	            var result = await _coinCapAssetsApi.GetAssetData(context.Message.Id).ConfigureAwait(false);
-	            if (result.Data == null)
-	            {
-		            await context.RespondAsync<CoinCapAssetRejected>(new
-		            {
-			            context.Message.EventId,
-			            InVar.Timestamp,
-			            context.Message.Id,
-			            Reason = $"Asset Data for a {context.Message.Id} is not available"
-		            });
-	            }
-	            else
-	            {
-		            await context.RespondAsync<CoinCapAssetAccepted>(new
-		            {
-			            context.Message.EventId,
-			            InVar.Timestamp,
-			            context.Message.Id,
-			            AssetData = result,
-			            Message = "Asset Data"
-		            });
-	            }
-            }
-        }
+          context.Message.EventId,
+          InVar.Timestamp,
+          context.Message.Id,
+          AssetData = result,
+          Message = "Asset Data"
+        });
+      }
     }
+  }
 }

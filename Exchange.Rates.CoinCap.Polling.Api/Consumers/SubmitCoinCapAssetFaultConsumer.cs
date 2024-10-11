@@ -3,17 +3,16 @@ using MassTransit;
 using System;
 using System.Threading.Tasks;
 
-namespace Exchange.Rates.CoinCap.Polling.Api.Consumers
+namespace Exchange.Rates.CoinCap.Polling.Api.Consumers;
+
+public class SubmitCoinCapAssetFaultConsumer : IConsumer<Fault<ISubmitCoinCapAssetId>>
 {
-    public class SubmitCoinCapAssetFaultConsumer : IConsumer<Fault<SubmitCoinCapAssetId>>
-    {
-        public Task Consume(ConsumeContext<Fault<SubmitCoinCapAssetId>> context)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine();
-            Console.WriteLine("There was an error with requesting a SubmitCoinCapAssetId");
-            Console.ResetColor();
-            return Task.CompletedTask;
-        }
-    }
+  public Task Consume(ConsumeContext<Fault<ISubmitCoinCapAssetId>> context)
+  {
+    Console.ForegroundColor = ConsoleColor.Red;
+    Console.WriteLine();
+    Console.WriteLine("There was an error with requesting a ISubmitCoinCapAssetId");
+    Console.ResetColor();
+    return Task.CompletedTask;
+  }
 }

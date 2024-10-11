@@ -1,40 +1,35 @@
 ﻿using Exchange.Rates.CoinCap.Polling.Api.Services;
+using Exchange.Rates.CoinCap.Polling.Api;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Exchange.Rates.Tests.UnitTests
+namespace Exchange.Rates.Tests.UnitTests;
+
+public class CoinCapAssetsApiTests(
+  WebApplicationFactory<Startup> factory)
+  : IClassFixture<WebApplicationFactory<Startup>>
 {
-    public class CoinCapAssetsApiTests : IClassFixture<WebApplicationFactory<CoinCap.Polling.Api.Startup>>
-    {
-        private readonly WebApplicationFactory<CoinCap.Polling.Api.Startup> _factory;
+  [Fact]
+  public async Task GetAssetDataTest_POSITIVE()
+  {
+    // Arrange
+    var service = factory.Services.GetRequiredService<ICoinCapAssetsApi>();
+    // Act
+    var result = await service.GetAssetData("bitcoin");
+    // Assert
+    Assert.NotNull(result.Data);
+  }
 
-        public CoinCapAssetsApiTests(WebApplicationFactory<CoinCap.Polling.Api.Startup> factory)
-        {
-            _factory = factory;
-        }
-
-        [Fact]
-        public async Task GetAssetDataTest_POSITIVE()
-        {
-            // Arrange
-            var service = _factory.Services.GetRequiredService<ICoinCapAssetsApi>();
-            // Act
-            var result = await service.GetAssetData("bitcoin").ConfigureAwait(false);
-            // Assert
-            Assert.NotNull(result.Data);
-        }
-
-        [Fact]
-        public async Task GetAssetDataTest_NEGATIVE()
-        {
-            // Arrange
-            var service = _factory.Services.GetRequiredService<ICoinCapAssetsApi>();
-            // Act
-            var result = await service.GetAssetData("xyz").ConfigureAwait(false);
-            // Assert
-            Assert.Null(result.Data);
-        }
-    }
+  [Fact]
+  public async Task GetAssetDataTest_NEGATIVE()
+  {
+    // Arrange
+    var service = factory.Services.GetRequiredService<ICoinCapAssetsApi>();
+    // Act
+    var result = await service.GetAssetData("xyz");
+    // Assert
+    Assert.Null(result.Data);
+  }
 }

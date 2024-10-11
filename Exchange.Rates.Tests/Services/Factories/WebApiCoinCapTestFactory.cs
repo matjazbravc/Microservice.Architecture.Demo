@@ -6,47 +6,46 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using System.IO;
 
-namespace Exchange.Rates.Tests.Services.Factories
+namespace Exchange.Rates.Tests.Services.Factories;
+
+/// <summary>
+/// Customized WebApplicationFactory
+/// </summary>
+public class WebApiCoinCapTestFactory : WebApplicationFactory<TestCoinCapStartup>
 {
-    /// <summary>
-    /// Customized WebApplicationFactory
-    /// </summary>
-    public class WebApiCoinCapTestFactory : WebApplicationFactory<TestCoinCapStartup>
+  public TService GetRequiredService<TService>()
+  {
+    if (Server == null)
     {
-        public TService GetRequiredService<TService>()
-        {
-            if (Server == null)
-            {
-                CreateDefaultClient();
-            }
-            return Server.Host.Services.GetRequiredService<TService>();
-        }
-
-        protected override void ConfigureWebHost(IWebHostBuilder builder)
-        {
-            builder
-                .UseTestServer()
-                .UseEnvironment("Test")
-                .UseContentRoot(".")
-                .ConfigureTestServices(services =>
-                {
-                    services.BuildServiceProvider();
-                });
-
-            // Call base Configuration
-            base.ConfigureWebHost(builder);
-        }
-
-        protected override IWebHostBuilder CreateWebHostBuilder()
-        {
-            var hostBuilder = new WebHostBuilder()
-                .UseContentRoot(Directory.GetCurrentDirectory())
-                .ConfigureAppConfiguration((context, _) =>
-                {
-                    context.HostingEnvironment.ApplicationName = typeof(Program).Assembly.GetName().Name;
-                })
-                .UseStartup<TestCoinCapStartup>();
-            return hostBuilder;
-        }
+      CreateDefaultClient();
     }
+    return Server.Host.Services.GetRequiredService<TService>();
+  }
+
+  protected override void ConfigureWebHost(IWebHostBuilder builder)
+  {
+    builder
+        .UseTestServer()
+        .UseEnvironment("Test")
+        .UseContentRoot(".")
+        .ConfigureTestServices(services =>
+        {
+          services.BuildServiceProvider();
+        });
+
+    // Call base Configuration
+    base.ConfigureWebHost(builder);
+  }
+
+  protected override IWebHostBuilder CreateWebHostBuilder()
+  {
+    var hostBuilder = new WebHostBuilder()
+        .UseContentRoot(Directory.GetCurrentDirectory())
+        .ConfigureAppConfiguration((context, _) =>
+        {
+          context.HostingEnvironment.ApplicationName = typeof(Program).Assembly.GetName().Name;
+        })
+        .UseStartup<TestCoinCapStartup>();
+    return hostBuilder;
+  }
 }

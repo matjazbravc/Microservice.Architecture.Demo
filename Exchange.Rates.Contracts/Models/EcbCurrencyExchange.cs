@@ -3,20 +3,19 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Exchange.Rates.Contracts.Models
+namespace Exchange.Rates.Contracts.Models;
+
+[Serializable]
+[ExcludeFromCodeCoverage]
+[JsonObject(IsReference = false)]
+public class EcbCurrencyExchange
 {
-    [Serializable]
-    [ExcludeFromCodeCoverage]
-    [JsonObject(IsReference = false)]
-    public class EcbCurrencyExchange
-    {
-        [JsonProperty("base")]
-        public string Base { get; set; }
+  [JsonProperty("base")]
+  public string Base { get; set; }
 
-        [JsonProperty("date")]
-        public DateTime Date { get; set; }
+  [JsonProperty("date")]
+  public DateTime Date { get; set; }
 
-        [JsonProperty("rates")]
-        public Dictionary<string, decimal> Rates { get; set; }
-    }
+  [JsonProperty("rates")]
+  public Dictionary<string, decimal> Rates { get; set; }
 }

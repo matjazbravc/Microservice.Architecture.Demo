@@ -55,8 +55,6 @@ After creating the certificate, you only have to share it with your container.
 ## Docker-Compose Files
 **Docker-compose.yml** file with setup for all the containers looks like this:
 ```yml
-version: '3.9'
-
 services:
     rabbitmq:
         container_name: rabbitmq
@@ -128,8 +126,6 @@ networks:
 ```
 and **Docker-compose.override.yml** file:
 ```yml
-version: '3.9'
-
 services:
     rabbitmq:
         environment:
@@ -221,10 +217,10 @@ To check all running Containers use **docker ps**.
 
 ## Call Gateway
 Let’s try to access **CoinCap API** through API Gateway:
-**https://localhost:8001/exchangeratescoincap/assetinfo?id=ethereum**
+**[https://localhost:8001/exchangeratescoincap/assetinfo?id=ethereum](https://localhost:8001/exchangeratescoincap/assetinfo?id=ethereum)**
 ![](res/Gateway.jpg)
 And access **Ecb API** through API Gateway:
-**https://localhost:8001/exchangeratesecb/eurbaserates?symbols=USD,CHF,CZK**
+**[https://localhost:8001/exchangeratesecb/eurbaserates?symbols=USD,CHF,CZK](https://localhost:8001/exchangeratesecb/eurbaserates?symbols=USD,CHF,CZK)**
 ![](res/Gateway_Ecb.jpg)
 
 ## Testing
@@ -236,14 +232,13 @@ From today’s DevOps position it is necessary to change applications fast and o
 
 Enjoy!
 
-## Prerequisites
 - [Visual Studio](https://www.visualstudio.com/vs/community) 2022 17.2.6 or greater
-- [.NET SDK 6.0](https://dotnet.microsoft.com/download/dotnet/6.0)
+- [.NET SDK 8.0](https://dotnet.microsoft.com/download/dotnet/8.0)
 - [Docker](https://www.docker.com/resources/what-container)
 
 ## Tags & Technologies
-- [.NET 6](https://github.com/dotnet/core/blob/main/release-notes/6.0)
-- [ASP.NET Core 6.0](https://docs.microsoft.com/en-us/aspnet/core/release-notes/aspnetcore-6.0?view=aspnetcore-6.0)
+- [.NET 8](https://github.com/dotnet/core/blob/main/release-notes/8.0)
+- [Docker](https://www.docker.com/resources/what-container)  
 - [Ocelot](https://github.com/ThreeMammals/Ocelot)  
 - [MassTransit](http://masstransit-project.com)  
 - [RabbitMQ](https://www.rabbitmq.com)  
