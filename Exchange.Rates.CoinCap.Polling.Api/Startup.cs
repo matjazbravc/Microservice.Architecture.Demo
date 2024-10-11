@@ -1,6 +1,7 @@
 using Exchange.Rates.CoinCap.Polling.Api.Options;
 using Exchange.Rates.CoinCap.Polling.Api.Policies;
 using Exchange.Rates.CoinCap.Polling.Api.Services;
+using Exchange.Rates.Contracts.Messages;
 using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -15,16 +16,11 @@ using System.Reflection;
 
 namespace Exchange.Rates.CoinCap.Polling.Api;
 
-public class Startup
+public class Startup(IConfiguration configuration)
 {
   private const string SERVICE_NAME = "Exchange.Rates.CoinCap.Polling.Api";
 
-  public Startup(IConfiguration configuration)
-  {
-    Configuration = configuration;
-  }
-
-  public IConfiguration Configuration { get; }
+  public IConfiguration Configuration { get; } = configuration;
 
   public void ConfigureServices(IServiceCollection services)
   {
@@ -71,28 +67,28 @@ public class Startup
     {
       // Automatically discover Consumers
       x.AddConsumers(Assembly.GetExecutingAssembly());
-      x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
+      x.UsingRabbitMq((busRegContext, rabbitBusConfig) =>
       {
-        cfg.Host(new Uri(massTransitOptions[nameof(MassTransitOptions.Host)]), h =>
+        rabbitBusConfig.Host(new Uri(massTransitOptions[nameof(MassTransitOptions.Host)]), rabbitHostConfig =>
         {
-          h.Username(massTransitOptions[nameof(MassTransitOptions.Username)]);
-          h.Password(massTransitOptions[nameof(MassTransitOptions.Password)]);
+          rabbitHostConfig.Username(massTransitOptions[nameof(MassTransitOptions.Username)]);
+          rabbitHostConfig.Password(massTransitOptions[nameof(MassTransitOptions.Password)]);
         });
-        cfg.ReceiveEndpoint(massTransitOptions[nameof(MassTransitOptions.QueueName)], ecfg =>
+        rabbitBusConfig.ReceiveEndpoint(massTransitOptions[nameof(MassTransitOptions.QueueName)], ecfg =>
         {
           ecfg.PrefetchCount = Convert.ToInt16(massTransitOptions[nameof(MassTransitOptions.ReceiveEndpointPrefetchCount)]);
-          ecfg.ConfigureConsumers(provider);
+          ecfg.ConfigureConsumers(busRegContext);
           ecfg.UseMessageRetry(r => r.Interval(5, 1000));
           ecfg.UseJsonSerializer();
         });
-      }));
+      });
     });
 
     services.AddCors();
     services.AddRouting(options => options.LowercaseUrls = true);
   }
 
-  public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+  public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
   {
     if (env.IsDevelopment())
     {
@@ -111,9 +107,9 @@ public class Startup
     app.UseEndpoints(configure =>
     {
       configure.MapGet("/", async context =>
-            {
-              await context.Response.WriteAsync(SERVICE_NAME);
-            });
+      {
+        await context.Response.WriteAsync(SERVICE_NAME);
+      });
     });
   }
 

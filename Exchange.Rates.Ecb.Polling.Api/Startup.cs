@@ -15,16 +15,11 @@ using System.Reflection;
 
 namespace Exchange.Rates.Ecb.Polling.Api;
 
-public class Startup
+public class Startup(IConfiguration configuration)
 {
   private const string SERVICE_NAME = "Exchange.Rates.Ecb.Polling.Api";
 
-  public Startup(IConfiguration configuration)
-  {
-    Configuration = configuration;
-  }
-
-  public IConfiguration Configuration { get; }
+  public IConfiguration Configuration { get; } = configuration;
 
   public void ConfigureServices(IServiceCollection services)
   {
@@ -32,7 +27,7 @@ public class Startup
     services.AddOptions();
 
     // Configure ExchangeratesApiOptions
-    var exchangeratesApiOptions = Configuration.GetSection(nameof(ExchangeratesApiOptions));
+    IConfigurationSection exchangeratesApiOptions = Configuration.GetSection(nameof(ExchangeratesApiOptions));
     services.Configure<ExchangeratesApiOptions>(options =>
     {
       options.HandlerLifetimeMinutes = Convert.ToInt32(exchangeratesApiOptions[nameof(ExchangeratesApiOptions.HandlerLifetimeMinutes)]);
@@ -41,7 +36,7 @@ public class Startup
     });
 
     // Configure MassTransitOptions
-    var massTransitOptions = Configuration.GetSection(nameof(MassTransitOptions));
+    IConfigurationSection massTransitOptions = Configuration.GetSection(nameof(MassTransitOptions));
     services.Configure<MassTransitOptions>(options =>
     {
       options.Host = massTransitOptions[nameof(MassTransitOptions.Host)];
@@ -54,7 +49,7 @@ public class Startup
     // Configure DI for application services
     RegisterServices(services);
 
-    var handlerLifetimeMinutes = Convert.ToInt32(exchangeratesApiOptions[nameof(ExchangeratesApiOptions.HandlerLifetimeMinutes)]);
+    int handlerLifetimeMinutes = Convert.ToInt32(exchangeratesApiOptions[nameof(ExchangeratesApiOptions.HandlerLifetimeMinutes)]);
     services.AddHttpClient<IEcbExchangeRatesApi, EcbExchangeRatesApi>()
         .AddPolicyHandler(RetryPolicies.GetRetryPolicy())
         .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler()
@@ -72,22 +67,21 @@ public class Startup
     {
       // Automatically discover Consumers
       x.AddConsumers(Assembly.GetExecutingAssembly());
-      x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
+      x.UsingRabbitMq((busRegContext, rabbitBusConfig) =>
       {
-        cfg.Host(new Uri(massTransitOptions[nameof(MassTransitOptions.Host)]), h =>
+        rabbitBusConfig.Host(new Uri(massTransitOptions[nameof(MassTransitOptions.Host)]), rabbitHostConfig =>
         {
-          h.Username(massTransitOptions[nameof(MassTransitOptions.Username)]);
-          h.Password(massTransitOptions[nameof(MassTransitOptions.Password)]);
+          rabbitHostConfig.Username(massTransitOptions[nameof(MassTransitOptions.Username)]);
+          rabbitHostConfig.Password(massTransitOptions[nameof(MassTransitOptions.Password)]);
         });
-        //cfg.ReceiveEndpoint("test", ecfg =>
-        cfg.ReceiveEndpoint(massTransitOptions[nameof(MassTransitOptions.QueueName)], ecfg =>
+        rabbitBusConfig.ReceiveEndpoint(massTransitOptions[nameof(MassTransitOptions.QueueName)], ecfg =>
         {
           ecfg.PrefetchCount = Convert.ToInt16(massTransitOptions[nameof(MassTransitOptions.ReceiveEndpointPrefetchCount)]);
-          ecfg.ConfigureConsumers(provider);
+          ecfg.ConfigureConsumers(busRegContext);
           ecfg.UseMessageRetry(r => r.Interval(5, 1000));
           ecfg.UseJsonSerializer();
         });
-      }));
+      });
     });
 
     services.AddCors();

@@ -25,13 +25,13 @@ public class WebApiCoinCapTestFactory : WebApplicationFactory<TestCoinCapStartup
   protected override void ConfigureWebHost(IWebHostBuilder builder)
   {
     builder
-        .UseTestServer()
-        .UseEnvironment("Test")
-        .UseContentRoot(".")
-        .ConfigureTestServices(services =>
-        {
-          services.BuildServiceProvider();
-        });
+      .UseTestServer()
+      .UseEnvironment("Test")
+      .UseContentRoot(".")
+      .ConfigureTestServices(services =>
+      {
+        services.BuildServiceProvider();
+      });
 
     // Call base Configuration
     base.ConfigureWebHost(builder);
@@ -39,13 +39,13 @@ public class WebApiCoinCapTestFactory : WebApplicationFactory<TestCoinCapStartup
 
   protected override IWebHostBuilder CreateWebHostBuilder()
   {
-    var hostBuilder = new WebHostBuilder()
-        .UseContentRoot(Directory.GetCurrentDirectory())
-        .ConfigureAppConfiguration((context, _) =>
-        {
-          context.HostingEnvironment.ApplicationName = typeof(Program).Assembly.GetName().Name;
-        })
-        .UseStartup<TestCoinCapStartup>();
+    IWebHostBuilder hostBuilder = new WebHostBuilder()
+      .UseContentRoot(Directory.GetCurrentDirectory())
+      .ConfigureAppConfiguration((context, _) =>
+      {
+        context.HostingEnvironment.ApplicationName = typeof(Program).Assembly.GetName().Name;
+      })
+      .UseStartup<TestCoinCapStartup>();
     return hostBuilder;
   }
 }

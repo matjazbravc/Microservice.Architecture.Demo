@@ -25,13 +25,13 @@ public class WebApiEcbTestFactory : WebApplicationFactory<TestEcbStartup>
   protected override void ConfigureWebHost(IWebHostBuilder builder)
   {
     builder
-        .UseTestServer()
-        .UseEnvironment("Test")
-        .UseContentRoot(".")
-        .ConfigureTestServices(services =>
-        {
-          services.BuildServiceProvider();
-        });
+      .UseTestServer()
+      .UseEnvironment("Test")
+      .UseContentRoot(".")
+      .ConfigureTestServices(services =>
+      {
+        services.BuildServiceProvider();
+      });
 
     // Call base Configuration
     base.ConfigureWebHost(builder);
@@ -39,13 +39,13 @@ public class WebApiEcbTestFactory : WebApplicationFactory<TestEcbStartup>
 
   protected override IWebHostBuilder CreateWebHostBuilder()
   {
-    var hostBuilder = new WebHostBuilder()
-        .UseContentRoot(Directory.GetCurrentDirectory())
-        .ConfigureAppConfiguration((context, _) =>
-        {
-          context.HostingEnvironment.ApplicationName = typeof(Program).Assembly.GetName().Name;
-        })
-        .UseStartup<TestEcbStartup>();
+    IWebHostBuilder hostBuilder = new WebHostBuilder()
+      .UseContentRoot(Directory.GetCurrentDirectory())
+      .ConfigureAppConfiguration((context, _) =>
+      {
+        context.HostingEnvironment.ApplicationName = typeof(Program).Assembly.GetName().Name;
+      })
+      .UseStartup<TestEcbStartup>();
     return hostBuilder;
   }
 }
