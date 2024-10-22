@@ -7,11 +7,12 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
-		<PackageReference Include="Ocelot" Version="23.3.4" />
+		<PackageReference Include="Ocelot.Cache.CacheManager" Version="23.3.4" />
+		<PackageReference Include="Ocelot.Provider.Polly" Version="23.3.4" />
 	</ItemGroup>
 	<ItemGroup>
 		<Content Update="appsettings.json">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 	</ItemGroup>
 	<ItemGroup>

@@ -225,6 +225,7 @@ And access **Ecb API** through API Gateway:
 
 ## Testing
 Test project includes both Unit and Integration tests:
+
 ![](res/Tests.jpg)
 
 ## Conclusion

@@ -1,32 +1,44 @@
-using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Ocelot.Cache.CacheManager;
+using Ocelot.DependencyInjection;
+using Ocelot.Middleware;
+using Ocelot.Provider.Polly;
 using System.IO;
 
-namespace Exchange.Rates.Gateway;
-
-public class Program
-{
-  public static void Main(string[] args)
+IHostBuilder hostBuilder = Host.CreateDefaultBuilder(args)
+  .UseContentRoot(Directory.GetCurrentDirectory())
+  .ConfigureWebHostDefaults(webBuilder =>
   {
-    BuildWebHost(args).Run();
-  }
+    webBuilder.ConfigureServices(services =>
+      services
+        .AddOcelot()
+        .AddCacheManager(x =>
+        {
+          x.WithDictionaryHandle();
+        })
+        .AddPolly());
+    webBuilder.Configure(app =>
+      app.UseOcelot().Wait())
+    .ConfigureAppConfiguration((hostingContext, config) =>
+    {
+      config
+        .SetBasePath(hostingContext.HostingEnvironment.ContentRootPath)
+        .AddJsonFile("appsettings.json", false, true)
+        .AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json", true, true)
+        .AddJsonFile("ocelot.json", false, true)
+        .AddJsonFile($"ocelot.{hostingContext.HostingEnvironment.EnvironmentName}.json", optional: true)
+        .AddEnvironmentVariables();
+    })
+    .ConfigureLogging((builderContext, logging) =>
+    {
+      logging.ClearProviders();
+      logging.AddConsole();
+      logging.AddDebug();
+    });
+  });
 
-  public static IWebHost BuildWebHost(string[] args) =>
-      WebHost.CreateDefaultBuilder(args)
-          .UseKestrel()
-          .UseContentRoot(Directory.GetCurrentDirectory())
-          .ConfigureAppConfiguration((hostingContext, config) =>
-          {
-            config
-                    .SetBasePath(hostingContext.HostingEnvironment.ContentRootPath)
-                    .AddJsonFile("appsettings.json", true, true)
-                    .AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json", true, true)
-                    .AddJsonFile("ocelot.json", optional: false, reloadOnChange: false)
-                    .AddJsonFile($"ocelot.{hostingContext.HostingEnvironment.EnvironmentName}.json", optional: true)
-                    .AddEnvironmentVariables();
-          })
-          .UseStartup<Startup>()
-          .Build();
-}
-
+IHost host = hostBuilder.Build();
+await host.RunAsync();
